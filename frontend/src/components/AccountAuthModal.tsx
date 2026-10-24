@@ -178,23 +178,14 @@ export const AccountAuthModal: React.FC<AccountAuthModalProps> = ({
     setSuccessMessage(null);
 
     try {
-      const res = await fetch('http://127.0.0.1:8000/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: regEmail.trim(),
-          full_name: regFullName.trim(),
-          password: regPassword,
-          role: regRole,
-        }),
+      const res = await api.register({
+        email: regEmail.trim(),
+        full_name: regFullName.trim(),
+        password: regPassword,
+        role: regRole,
       });
 
-      if (!res.ok) {
-        const errorJson = await res.json();
-        throw new Error(errorJson.detail || 'Gagal mendaftarkan akun baru.');
-      }
-
-      const newUser = await res.json();
+      const newUser = res.user;
       setSuccessMessage(`Akun ${newUser.full_name} (${newUser.role}) berhasil disimpan di PostgreSQL!`);
       setRegFullName('');
       setRegEmail('');
