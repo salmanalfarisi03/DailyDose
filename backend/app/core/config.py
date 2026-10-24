@@ -53,9 +53,18 @@ class Settings(BaseSettings):
         if self.DATABASE_URL:
             url = self.DATABASE_URL
             if url.startswith("postgres://"):
-                return url.replace("postgres://", "postgresql+asyncpg://", 1)
-            if url.startswith("postgresql://"):
-                return url.replace("postgresql://", "postgresql+asyncpg://", 1)
+                url = url.replace("postgres://", "postgresql+asyncpg://", 1)
+            elif url.startswith("postgresql://"):
+                url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
+            
+            # asyncpg requires 'ssl=' instead of 'sslmode=' and does not accept 'channel_binding'
+            if "sslmode=" in url:
+                url = url.replace("sslmode=require", "ssl=require").replace("sslmode=prefer", "ssl=prefer").replace("sslmode=verify-full", "ssl=verify-full").replace("sslmode=disable", "ssl=disable")
+            if "channel_binding=" in url:
+                import re
+                url = re.sub(r'[?&]channel_binding=[^&]+', '', url)
+                if "?" not in url and "&" in url:
+                    url = url.replace("&", "?", 1)
             return url
         return (
             f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
