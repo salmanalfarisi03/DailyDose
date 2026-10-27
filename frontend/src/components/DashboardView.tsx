@@ -205,7 +205,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
             <div className="flex items-center gap-2 mt-3 text-xs">
               <span className="text-slate-500 font-medium">
-                0 Outstanding
+                0 Piutang Tertunda
               </span>
               <span className="font-medium px-2.5 py-0.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100 text-[11px] flex items-center gap-1">
                 <Check className="w-3 h-3 stroke-[3]" />
@@ -235,10 +235,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
             <div className="flex items-center gap-2 mt-3 text-xs">
               <span className="font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200 text-[11px]">
-                100% Retention
+                100% Retensi
               </span>
               <span className="text-slate-400 font-medium">
-                B2B Verified
+                Terverifikasi B2B
               </span>
               <ArrowRight className="w-3 h-3 text-slate-400 ml-auto group-hover:translate-x-1 transition-transform" />
             </div>
@@ -265,10 +265,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
             <div className="flex items-center gap-2 mt-3 text-xs">
               <span className="font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-100 text-[11px]">
-                Zero Backlog
+                Nir-Tunggakan
               </span>
               <span className="text-slate-400 font-medium">
-                Sistem up-to-date
+                Sistem Terkini
               </span>
               <ArrowRight className="w-3 h-3 text-slate-400 ml-auto group-hover:translate-x-1 transition-transform" />
             </div>

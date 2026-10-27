@@ -109,11 +109,11 @@ export const InvoicesView: React.FC<InvoicesViewProps> = ({
             className="px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-xs text-slate-700 font-medium focus:outline-none focus:border-indigo-500 shadow-2xs"
           >
             <option value="all">Semua Status</option>
-            <option value="DRAFT">DRAFT</option>
-            <option value="ISSUED">ISSUED</option>
-            <option value="PAID">PAID</option>
-            <option value="OVERDUE">OVERDUE</option>
-            <option value="CANCELLED">CANCELLED</option>
+            <option value="DRAFT">Draf (DRAFT)</option>
+            <option value="ISSUED">Terbit (ISSUED)</option>
+            <option value="PAID">Lunas (PAID)</option>
+            <option value="OVERDUE">Jatuh Tempo (OVERDUE)</option>
+            <option value="CANCELLED">Dibatalkan (CANCELLED)</option>
           </select>
         </div>
 

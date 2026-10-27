@@ -27,7 +27,7 @@ export const PRESET_USERS: UserProfile[] = [
     name: 'Aditya Dharma',
     email: 'owner@dailydose.ai',
     role: 'OWNER',
-    title: 'Owner & Managing Dir.',
+    title: 'Direktur Utama & Pemilik',
     initials: 'AD',
     avatarColor: 'bg-slate-900 text-white',
   },
@@ -36,7 +36,7 @@ export const PRESET_USERS: UserProfile[] = [
     name: 'Siti Rahma',
     email: 'admin@dailydose.ai',
     role: 'ADMIN',
-    title: 'Operations & Business Admin',
+    title: 'Admin Operasional & Bisnis',
     initials: 'SR',
     avatarColor: 'bg-indigo-600 text-white',
   },
@@ -45,7 +45,7 @@ export const PRESET_USERS: UserProfile[] = [
     name: 'Budi Santoso',
     email: 'finance@dailydose.ai',
     role: 'FINANCE',
-    title: 'Finance & Invoicing Specialist',
+    title: 'Spesialis Keuangan & Faktur',
     initials: 'BS',
     avatarColor: 'bg-emerald-600 text-white',
   },
@@ -140,10 +140,10 @@ export const AccountAuthModal: React.FC<AccountAuthModalProps> = ({
         role: role,
         title:
           role === 'OWNER'
-            ? 'Owner & Managing Dir.'
+            ? 'Direktur Utama & Pemilik'
             : role === 'ADMIN'
-            ? 'Operations & Business Admin'
-            : 'Finance & Invoicing Specialist',
+            ? 'Admin Operasional & Bisnis'
+            : 'Spesialis Keuangan & Faktur',
         initials: initials || 'AD',
         avatarColor:
           role === 'OWNER'

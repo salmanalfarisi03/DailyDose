@@ -17,8 +17,36 @@ interface NavbarProps {
 
 const tabTitles: Record<ActiveTab, { title: string; subtitle: string }> = {
   dashboard: {
-    title: 'Executive Performance & Control',
+    title: 'Ringkasan Performa & Kontrol Eksekutif',
     subtitle: 'Monitoring metrik bisnis, keuangan real-time, dan status automasi inventori',
+  },
+  campaigns: {
+    title: 'Kampanye Pemasaran Langsung',
+    subtitle: 'Pantau 9 kampanye pemasaran aktif, pacing anggaran, dan performa ROAS',
+  },
+  leads: {
+    title: 'Pipeline Prospek Penjualan B2B',
+    subtitle: 'Manajemen pipeline penjualan, skoring prospek B2B, dan kontak klien',
+  },
+  analytics: {
+    title: 'Analisis Mendalam & Finansial',
+    subtitle: 'Visualisasi 3D chart arus kas, rasio piutang, dan tren kuartal',
+  },
+  audiences: {
+    title: 'Segmen Audiens & Penargetan Iklan',
+    subtitle: 'Segmentasi pelanggan, retargeting kampanye, dan analisis kohor',
+  },
+  reports: {
+    title: 'Laporan Keuangan & Audit Kampanye',
+    subtitle: 'Rekonsiliasi invoice, audit piutang, dan ringkasan eksekutif',
+  },
+  settings: {
+    title: 'Pengaturan Ruang Kerja',
+    subtitle: 'Konfigurasi organisasi, hak akses peran, dan integrasi API',
+  },
+  help: {
+    title: 'Pusat Bantuan & Dokumentasi',
+    subtitle: 'Panduan operasional sistem dan status kesehatan infrastruktur',
   },
   customers: {
     title: 'Pelanggan & Manajemen CRM',

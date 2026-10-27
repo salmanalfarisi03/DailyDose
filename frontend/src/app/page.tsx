@@ -32,6 +32,11 @@ import { AccountAuthModal, PRESET_USERS } from '@/components/AccountAuthModal';
 import { SystemDiagnosticsModal } from '@/components/SystemDiagnosticsModal';
 import { AnalyticsDeepDiveModal } from '@/components/AnalyticsDeepDiveModal';
 import { LandingLoginView } from '@/components/LandingLoginView';
+import { ExecutivePerformanceDashboard } from '@/components/ExecutivePerformanceDashboard';
+import { CampaignsView } from '@/components/CampaignsView';
+import { LeadsView } from '@/components/LeadsView';
+import { AudiencesView } from '@/components/AudiencesView';
+import { ReportsView } from '@/components/ReportsView';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
@@ -122,10 +127,10 @@ export default function Home() {
             role: role,
             title:
               role === 'OWNER'
-                ? 'Owner & Managing Dir.'
+                ? 'Direktur Utama & Pemilik'
                 : role === 'ADMIN'
-                ? 'Operations & Business Admin'
-                : 'Finance & Invoicing Specialist',
+                ? 'Admin Operasional & Bisnis'
+                : 'Spesialis Keuangan & Faktur',
             initials: initials,
             avatarColor:
               role === 'OWNER'
@@ -399,7 +404,7 @@ export default function Home() {
             <span className="text-xl font-black">D</span>
           </div>
           <p className="text-xs font-mono font-medium text-slate-400">
-            DailyDose AI • Memeriksa Otorisasi Sesi...
+            DailyDose  • Memeriksa Otorisasi Sesi...
           </p>
         </div>
       </div>
@@ -411,94 +416,175 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen flex bg-[#faf8ff] text-slate-900 antialiased font-sans selection:bg-slate-900 selection:text-white">
+    <div className="min-h-screen flex bg-[#faf8f5] text-slate-900 antialiased font-sans selection:bg-slate-900 selection:text-white">
       {/* Sidebar Navigation */}
       <Sidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        health={health}
-        healthLoading={healthLoading}
-        lowStockCount={lowStockCount}
         currentUser={currentUser}
         onOpenAccountModal={() => setModalAccountAuth(true)}
-        onOpenDiagnosticsModal={() => setModalDiagnostics(true)}
         onLogout={handleLogout}
       />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 bg-[#faf8ff]">
-        <Navbar
-          activeTab={activeTab}
-          onRefresh={fetchData}
-          loading={loading}
-          onQuickAction={handleQuickAction}
-          currentUser={currentUser}
-          onOpenAccountModal={() => setModalAccountAuth(true)}
-          onOpenDiagnosticsModal={() => setModalDiagnostics(true)}
-        />
-
-        <main className="p-8 max-w-[1536px] w-full mx-auto flex-1">
-          {activeTab === 'dashboard' && (
-            <DashboardView
-              customers={customers}
-              products={products}
-              invoices={invoices}
-              tasks={tasks}
-              onNavigate={setActiveTab}
-              onUpdateTaskStatus={handleUpdateTaskStatus}
-              onSeedSampleData={handleSeedDemoData}
-              seedingLoading={seedingLoading}
-              onOpenDeepDiveModal={() => setModalDeepDive(true)}
+      <div className="flex-1 flex flex-col min-w-0 bg-[#faf8f5]">
+        {activeTab === 'dashboard' ? (
+          <ExecutivePerformanceDashboard
+            onPlanCampaign={() => handleQuickAction('task')}
+            onOpenLeads={() => setActiveTab('leads')}
+            onOpenCampaigns={() => setActiveTab('campaigns')}
+            onOpenAnalytics={() => setActiveTab('analytics')}
+          />
+        ) : (
+          <>
+            <Navbar
+              activeTab={activeTab}
+              onRefresh={fetchData}
+              loading={loading}
+              onQuickAction={handleQuickAction}
+              currentUser={currentUser}
+              onOpenAccountModal={() => setModalAccountAuth(true)}
               onOpenDiagnosticsModal={() => setModalDiagnostics(true)}
             />
-          )}
 
-          {activeTab === 'customers' && (
-            <CustomersView
-              customers={customers}
-              onOpenCreate={() => setModalCustomer(true)}
-              onDeleteCustomer={handleDeleteCustomer}
-              onToggleActive={handleToggleCustomerActive}
-            />
-          )}
+            <main className="p-8 max-w-[1536px] w-full mx-auto flex-1">
+              {activeTab === 'campaigns' && (
+                <CampaignsView onPlanCampaign={() => handleQuickAction('task')} />
+              )}
 
-          {activeTab === 'products' && (
-            <ProductsView
-              products={products}
-              onOpenCreate={() => setModalProduct(true)}
-              onDeleteProduct={handleDeleteProduct}
-            />
-          )}
+              {activeTab === 'leads' && <LeadsView />}
 
-          {activeTab === 'invoices' && (
-            <InvoicesView
-              invoices={invoices}
-              customers={customers}
-              onOpenCreate={() => setModalInvoice(true)}
-              onUpdateStatus={handleUpdateInvoiceStatus}
-              onDeleteInvoice={handleDeleteInvoice}
-            />
-          )}
+              {activeTab === 'audiences' && <AudiencesView />}
 
-          {activeTab === 'tasks' && (
-            <TasksView
-              tasks={tasks}
-              customers={customers}
-              onOpenCreate={() => setModalTask(true)}
-              onUpdateStatus={handleUpdateTaskStatus}
-              onDeleteTask={handleDeleteTask}
-            />
-          )}
+              {activeTab === 'reports' && <ReportsView invoices={invoices} />}
 
-          {activeTab === 'ai' && (
-            <AiAssistantView
-              customers={customers}
-              products={products}
-              invoices={invoices}
-              tasks={tasks}
-            />
-          )}
-        </main>
+              {activeTab === 'customers' && (
+                <CustomersView
+                  customers={customers}
+                  onOpenCreate={() => setModalCustomer(true)}
+                  onDeleteCustomer={handleDeleteCustomer}
+                  onToggleActive={handleToggleCustomerActive}
+                />
+              )}
+
+              {activeTab === 'products' && (
+                <ProductsView
+                  products={products}
+                  onOpenCreate={() => setModalProduct(true)}
+                  onDeleteProduct={handleDeleteProduct}
+                />
+              )}
+
+              {activeTab === 'invoices' && (
+                <InvoicesView
+                  invoices={invoices}
+                  customers={customers}
+                  onOpenCreate={() => setModalInvoice(true)}
+                  onUpdateStatus={handleUpdateInvoiceStatus}
+                  onDeleteInvoice={handleDeleteInvoice}
+                />
+              )}
+
+              {activeTab === 'tasks' && (
+                <TasksView
+                  tasks={tasks}
+                  customers={customers}
+                  onOpenCreate={() => setModalTask(true)}
+                  onUpdateStatus={handleUpdateTaskStatus}
+                  onDeleteTask={handleDeleteTask}
+                />
+              )}
+
+              {activeTab === 'analytics' && (
+                <DashboardView
+                  customers={customers}
+                  products={products}
+                  invoices={invoices}
+                  tasks={tasks}
+                  onNavigate={setActiveTab}
+                  onUpdateTaskStatus={handleUpdateTaskStatus}
+                  onSeedSampleData={handleSeedDemoData}
+                  seedingLoading={seedingLoading}
+                  onOpenDeepDiveModal={() => setModalDeepDive(true)}
+                  onOpenDiagnosticsModal={() => setModalDiagnostics(true)}
+                />
+              )}
+
+              {activeTab === 'ai' && (
+                <AiAssistantView
+                  customers={customers}
+                  products={products}
+                  invoices={invoices}
+                  tasks={tasks}
+                />
+              )}
+
+              {activeTab === 'settings' && (
+                <div className="bg-white rounded-2xl p-8 border border-slate-200/80 shadow-xs max-w-2xl mx-auto space-y-5">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div>
+                      <h2 className="text-xl font-bold text-slate-900 tracking-tight">
+                        Pengaturan Ruang Kerja
+                      </h2>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        Konfigurasi identitas perusahaan, otorisasi peran, dan integrasi API
+                      </p>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <button
+                      onClick={() => setModalAccountAuth(true)}
+                      className="w-full flex items-center justify-between p-4 rounded-xl border border-slate-200 hover:bg-slate-50 transition cursor-pointer"
+                    >
+                      <div>
+                        <div className="font-semibold text-xs text-slate-900">
+                          Manajemen Akun &amp; Tim Eksekutif
+                        </div>
+                        <div className="text-[11px] text-slate-500 mt-0.5">
+                          Kelola akun peran (Direktur Utama, Admin, Keuangan) tersimpan di PostgreSQL
+                        </div>
+                      </div>
+                      <span className="text-xs text-indigo-600 font-semibold">Buka →</span>
+                    </button>
+                    <button
+                      onClick={() => setModalDiagnostics(true)}
+                      className="w-full flex items-center justify-between p-4 rounded-xl border border-slate-200 hover:bg-slate-50 transition cursor-pointer"
+                    >
+                      <div>
+                        <div className="font-semibold text-xs text-slate-900">
+                          Diagnostik Infrastruktur &amp; Cloud Database
+                        </div>
+                        <div className="text-[11px] text-slate-500 mt-0.5">
+                          Periksa status latency FastAPI, koneksi Neon PostgreSQL, dan telemetry
+                        </div>
+                      </div>
+                      <span className="text-xs text-indigo-600 font-semibold">Buka →</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'help' && (
+                <div className="bg-white rounded-2xl p-8 border border-slate-200/80 shadow-xs max-w-2xl mx-auto space-y-4">
+                  <h2 className="text-xl font-bold text-slate-900 tracking-tight">
+                    Pusat Bantuan &amp; Dokumentasi
+                  </h2>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Selamat datang di DailyDose  — Sistem Operasi Bisnis Eksekutif. Untuk melihat
+                    arsitektur lengkap, silakan lihat file <code>BLUEPRINT.md</code> dan{' '}
+                    <code>README.md</code> pada workspace Anda.
+                  </p>
+                  <button
+                    onClick={() => setModalDiagnostics(true)}
+                    className="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-semibold cursor-pointer"
+                  >
+                    Buka Diagnostik Sistem
+                  </button>
+                </div>
+              )}
+            </main>
+          </>
+        )}
       </div>
 
       {/* Modals */}

@@ -76,10 +76,10 @@ export const LandingLoginView: React.FC<LandingLoginViewProps> = ({
         role: role,
         title:
           role === 'OWNER'
-            ? 'Owner & Managing Dir.'
+            ? 'Direktur Utama & Pemilik'
             : role === 'ADMIN'
-            ? 'Operations & Business Admin'
-            : 'Finance & Invoicing Specialist',
+            ? 'Admin Operasional & Bisnis'
+            : 'Spesialis Keuangan & Faktur',
         initials: initials || 'AD',
         avatarColor:
           role === 'OWNER'
