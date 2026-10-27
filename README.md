@@ -66,15 +66,11 @@ Seluruh antarmuka menggunakan Bahasa Indonesia formal untuk kebutuhan operasiona
 Buat berkas `.env` di dalam folder `backend/` atau di root proyek sesuai kebutuhan:
 
 ```env
-POSTGRES_HOST=127.0.0.1
-POSTGRES_PORT=5432
-POSTGRES_USER=dailydose_app
-POSTGRES_PASSWORD=password_database_anda
-POSTGRES_DB=dailydose_db
-DATABASE_URL=postgresql+asyncpg://dailydose_app:password_database_anda@127.0.0.1:5432/dailydose_db
-ENVIRONMENT=development
-DEBUG=True
-GEMINI_API_KEY=api_key_gemini_anda_opsional
+POSTGRES_HOST=
+POSTGRES_PORT=
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+
 ```
 
 ### 3. Migrasi Database (Alembic)
@@ -117,11 +113,11 @@ Akses dasbor aplikasi melalui peramban web di: **http://localhost:3000/**
 
 Formulir masuk telah dilengkapi data akun default untuk keperluan pengujian:
 
-| Akun / Jabatan | Alamat Email | Kata Sandi | Peran (Role) | Lingkup Hak Akses |
+| Akun / Jabatan  Peran (Role) | Lingkup Hak Akses |
 | :--- | :--- | :--- | :--- | :--- |
-| Direktur Utama | `owner@dailydose.ai` | `OwnerPass123!` | OWNER | Akses penuh seluruh metrik finansial, CRM, dan konfigurasi |
-| Admin Operasional | `admin@dailydose.ai` | `AdminPass123!` | ADMIN | Manajemen data operasional, prospek, katalog produk, dan tugas |
-| Spesialis Keuangan | `finance@dailydose.ai` | `FinancePass123!` | FINANCE | Pengelolaan faktur tagihan, status pembayaran, dan laporan keuangan |
+| Direktur Utama  | OWNER | Akses penuh seluruh metrik finansial, CRM, dan konfigurasi |
+| Admin Operasional  | ADMIN | Manajemen data operasional, prospek, katalog produk, dan tugas |
+| Spesialis Keuangan | FINANCE | Pengelolaan faktur tagihan, status pembayaran, dan laporan keuangan |
 
 ---
 
