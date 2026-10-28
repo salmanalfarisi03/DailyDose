@@ -264,7 +264,7 @@ export const AiAssistantView: React.FC<AiAssistantViewProps> = ({
               <div
                 className={`max-w-2xl rounded-3xl p-5 text-xs leading-relaxed space-y-2 relative group ${
                   isUser
-                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-tr-sm shadow-md shadow-blue-500/10'
+                    ? 'bg-slate-900 text-white rounded-tr-sm shadow-xs'
                     : 'bg-slate-50/90 border border-slate-150 text-slate-800 rounded-tl-sm shadow-2xs'
                 }`}
               >
@@ -442,7 +442,7 @@ export const AiAssistantView: React.FC<AiAssistantViewProps> = ({
             </div>
 
             {/* Panduan Cara Mendapatkan API Key Gratis */}
-            <div className="p-4 rounded-2xl bg-gradient-to-r from-blue-50/80 to-indigo-50/80 border border-blue-200/70 space-y-2.5 text-xs">
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2.5 text-xs">
               <div className="flex items-center justify-between">
                 <span className="font-bold text-slate-900 flex items-center gap-1.5">
                   <Sparkles className="w-4 h-4 text-blue-600" />

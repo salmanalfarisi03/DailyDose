@@ -31,6 +31,8 @@ interface ExecutivePerformanceDashboardProps {
   onOpenCampaigns?: () => void;
   onOpenAnalytics?: () => void;
   onOpenAiSuite?: () => void;
+  isDarkMode?: boolean;
+  onToggleDarkMode?: () => void;
 }
 
 interface LeadItem {
@@ -47,13 +49,27 @@ interface LeadItem {
 }
 
 export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboardProps> = ({
+  onPlanCampaign,
   onOpenLeads,
   onOpenCampaigns,
   onOpenAnalytics,
+  isDarkMode: propIsDarkMode,
+  onToggleDarkMode,
 }) => {
   // Theme & Canvas States
   const [accentTheme, setAccentTheme] = useState<'indigo' | 'terracotta'>('indigo');
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [internalDarkMode, setInternalDarkMode] = useState(false);
+  const isDarkMode = propIsDarkMode !== undefined ? propIsDarkMode : internalDarkMode;
+
+  const handleToggleTheme = () => {
+    if (onToggleDarkMode) {
+      onToggleDarkMode();
+    } else {
+      setInternalDarkMode(!internalDarkMode);
+    }
+    showToast(!isDarkMode ? 'Mode gelap kanvas diaktifkan' : 'Mode terang diaktifkan');
+  };
+
   const [performanceRange, setPerformanceRange] = useState<'7d' | '30d' | '90d'>('30d');
   const [channelTab, setChannelTab] = useState<'revenue' | 'orders' | 'spend'>('revenue');
   const [funnelFilter, setFunnelFilter] = useState<string>('Semua');
@@ -334,12 +350,20 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
     }, 800);
   };
 
-  const primaryBtnClass =
-    accentTheme === 'indigo'
-      ? 'bg-[#4338ca] hover:bg-[#3730a3] text-white'
-      : 'bg-[#cf5636] hover:bg-[#ba482a] text-white';
+  const primaryBtnClass = isDarkMode
+    ? 'bg-zinc-100 hover:bg-white text-zinc-900 font-medium'
+    : accentTheme === 'indigo'
+    ? 'bg-slate-900 hover:bg-slate-800 text-white font-medium'
+    : 'bg-stone-900 hover:bg-stone-800 text-white font-medium';
 
-  const strokeColor = accentTheme === 'indigo' ? '#4f46e5' : '#cf5636';
+  const strokeColor =
+    accentTheme === 'indigo'
+      ? isDarkMode
+        ? '#818cf8'
+        : '#4f46e5'
+      : isDarkMode
+      ? '#fb923c'
+      : '#cf5636';
   const fillGradientId = accentTheme === 'indigo' ? 'indigoGrad' : 'terracottaGrad';
 
   // Dynamic range calculations
@@ -402,8 +426,8 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
 
   return (
     <div
-      className={`min-h-screen text-slate-900 pb-20 font-sans transition-colors duration-300 relative ${
-        isDarkMode ? 'bg-[#0f172a] text-white' : 'bg-[#faf8f5]'
+      className={`min-h-screen pb-20 font-sans transition-colors duration-300 relative ${
+        isDarkMode ? 'bg-[#151722] text-zinc-100' : 'bg-[#faf8f5] text-slate-900'
       }`}
     >
       {/* Toast Notifikasi Pop-up */}
@@ -418,7 +442,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
       <header
         className={`sticky top-0 z-30 backdrop-blur-md border-b px-6 py-2.5 flex items-center justify-between transition-colors ${
           isDarkMode
-            ? 'bg-[#0f172a]/90 border-slate-800'
+            ? 'bg-[#151722]/90 border-white/[0.06]'
             : 'bg-[#faf8f5]/90 border-stone-200/60'
         }`}
       >
@@ -426,14 +450,20 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
         <div className="flex items-center gap-3">
           <div
             className={`flex items-center gap-1.5 text-xs font-medium ${
-              isDarkMode ? 'text-slate-300' : 'text-slate-700'
+              isDarkMode ? 'text-zinc-300' : 'text-slate-700'
             }`}
           >
             <Grid className="w-3.5 h-3.5 text-slate-400" />
             <span>Ringkasan</span>
           </div>
-          <span className="text-slate-300">/</span>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-[11px] font-semibold text-emerald-800">
+          <span className={isDarkMode ? 'text-zinc-600' : 'text-slate-300'}>/</span>
+          <div
+            className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${
+              isDarkMode
+                ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                : 'bg-emerald-50 border-emerald-200/80 text-emerald-800'
+            }`}
+          >
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             DailyDose AI Core v2.4
           </div>
@@ -444,7 +474,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
           <div
             className={`w-full border rounded-full px-4 py-1.5 text-xs flex items-center gap-2 shadow-xs transition-all ${
               isDarkMode
-                ? 'bg-slate-800/80 border-slate-700 text-white'
+                ? 'bg-[#1e2130] border-white/[0.08] text-zinc-100 placeholder:text-zinc-500'
                 : 'bg-white border-slate-200/90 text-slate-700'
             }`}
           >
@@ -459,7 +489,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
             <kbd
               className={`hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono rounded border ${
                 isDarkMode
-                  ? 'bg-slate-700 border-slate-600 text-slate-300'
+                  ? 'bg-[#25293c] border-white/10 text-zinc-400'
                   : 'bg-slate-100 border-slate-200 text-slate-400'
               }`}
             >
@@ -470,42 +500,58 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
 
         {/* Kanan: Tanggal, Pengubah Tema, Notifikasi, Mode Visual & Tombol Baru */}
         <div className="flex items-center gap-3">
-          <div className="hidden lg:flex items-center gap-1.5 text-xs font-medium text-slate-500 font-mono">
+          <div
+            className={`hidden lg:flex items-center gap-1.5 text-xs font-medium font-mono ${
+              isDarkMode ? 'text-zinc-400' : 'text-slate-500'
+            }`}
+          >
             <span className="w-2 h-2 rounded-full bg-emerald-500" />
             <span>Kamis, 22 Okt • 09:48 WIB</span>
           </div>
 
-          <div className="h-4 w-[1px] bg-slate-200 hidden sm:block" />
+          <div
+            className={`h-4 w-[1px] hidden sm:block ${
+              isDarkMode ? 'bg-white/[0.08]' : 'bg-slate-200'
+            }`}
+          />
 
           {/* Pengubah Tema Warna Aksen (Interaktif) */}
           <div
             className={`hidden sm:flex items-center border rounded-full p-0.5 shadow-xs text-[11px] ${
-              isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'
+              isDarkMode ? 'bg-[#1e2130] border-white/[0.08]' : 'bg-white border-slate-200'
             }`}
           >
             <button
               onClick={() => {
                 setAccentTheme('indigo');
-                showToast('Tema aksen diubah ke Iris Royal');
+                showToast('Tema aksen diubah ke Iris');
               }}
-              className={`px-2 py-0.5 rounded-full font-medium transition-all cursor-pointer ${
+              className={`px-2.5 py-0.5 rounded-full font-medium transition-all cursor-pointer ${
                 accentTheme === 'indigo'
-                  ? 'bg-indigo-600 text-white shadow-xs'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? isDarkMode
+                    ? 'bg-white/10 text-white shadow-xs'
+                    : 'bg-slate-900 text-white shadow-xs'
+                  : isDarkMode
+                  ? 'text-zinc-400 hover:text-zinc-200'
+                  : 'text-slate-500 hover:text-slate-800'
               }`}
-              title="Aksen Iris Royal"
+              title="Aksen Iris"
             >
               Iris
             </button>
             <button
               onClick={() => {
                 setAccentTheme('terracotta');
-                showToast('Tema aksen diubah ke Terracotta Luxe');
+                showToast('Tema aksen diubah ke Terracotta');
               }}
-              className={`px-2 py-0.5 rounded-full font-medium transition-all cursor-pointer ${
+              className={`px-2.5 py-0.5 rounded-full font-medium transition-all cursor-pointer ${
                 accentTheme === 'terracotta'
-                  ? 'bg-[#cf5636] text-white shadow-xs'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? isDarkMode
+                    ? 'bg-white/10 text-white shadow-xs'
+                    : 'bg-stone-900 text-white shadow-xs'
+                  : isDarkMode
+                  ? 'text-zinc-400 hover:text-zinc-200'
+                  : 'text-slate-500 hover:text-slate-800'
               }`}
               title="Aksen Terracotta"
             >
@@ -519,21 +565,37 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
               onClick={() => setNotificationsOpen(!notificationsOpen)}
               className={`relative p-2 rounded-full border transition-colors shadow-xs cursor-pointer ${
                 isDarkMode
-                  ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+                  ? 'bg-[#1e2130] border-white/[0.08] text-zinc-300 hover:bg-[#25293c]'
                   : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
               }`}
               title="Notifikasi Eksekutif"
             >
               <Bell className="w-3.5 h-3.5" />
-              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white" />
+              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white/80" />
             </button>
 
             {/* Menu Pop-up Notifikasi */}
             {notificationsOpen && (
-              <div className="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-slate-200/90 p-4 z-40 text-slate-900 animate-in fade-in slide-in-from-top-2">
-                <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                  <span className="text-xs font-bold text-slate-900">Notifikasi Eksekutif</span>
-                  <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+              <div
+                className={`absolute right-0 mt-2 w-80 rounded-2xl shadow-xl border p-4 z-40 animate-in fade-in slide-in-from-top-2 ${
+                  isDarkMode
+                    ? 'bg-[#1e2130] border-white/10 text-zinc-100'
+                    : 'bg-white border-slate-200/90 text-slate-900'
+                }`}
+              >
+                <div
+                  className={`flex items-center justify-between pb-2 border-b ${
+                    isDarkMode ? 'border-white/[0.06]' : 'border-slate-100'
+                  }`}
+                >
+                  <span className="text-xs font-bold">Notifikasi Eksekutif</span>
+                  <span
+                    className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                      isDarkMode
+                        ? 'text-emerald-400 bg-emerald-500/10'
+                        : 'text-emerald-600 bg-emerald-50'
+                    }`}
+                  >
                     3 Pemberitahuan
                   </span>
                 </div>
@@ -543,12 +605,18 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                       setNotificationsOpen(false);
                       onOpenLeads?.();
                     }}
-                    className="p-2 rounded-xl bg-slate-50 hover:bg-slate-100 transition cursor-pointer"
+                    className={`p-2 rounded-xl transition cursor-pointer ${
+                      isDarkMode ? 'bg-[#151722] hover:bg-white/[0.05]' : 'bg-slate-50 hover:bg-slate-100'
+                    }`}
                   >
-                    <div className="font-semibold text-slate-800 text-[11px]">
+                    <div className="font-semibold text-[11px]">
                       🔥 Prospek Baru: Switchback Running Club
                     </div>
-                    <div className="text-[10px] text-slate-500 mt-0.5">
+                    <div
+                      className={`text-[10px] mt-0.5 ${
+                        isDarkMode ? 'text-zinc-400' : 'text-slate-500'
+                      }`}
+                    >
                       Tomás baru saja menambahkan data prospek wholesale baru.
                     </div>
                   </div>
@@ -557,20 +625,38 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                       setNotificationsOpen(false);
                       setBudgetModalOpen(true);
                     }}
-                    className="p-2 rounded-xl bg-amber-50 hover:bg-amber-100/70 transition cursor-pointer"
+                    className={`p-2 rounded-xl transition cursor-pointer ${
+                      isDarkMode
+                        ? 'bg-amber-500/10 hover:bg-amber-500/15 text-amber-200'
+                        : 'bg-amber-50 hover:bg-amber-100/70 text-amber-800'
+                    }`}
                   >
-                    <div className="font-semibold text-amber-800 text-[11px]">
+                    <div className="font-semibold text-[11px]">
                       ⚠️ Peringatan Anggaran: Penelusuran Berbayar (+3%)
                     </div>
-                    <div className="text-[10px] text-amber-600 mt-0.5">
+                    <div
+                      className={`text-[10px] mt-0.5 ${
+                        isDarkMode ? 'text-amber-300/70' : 'text-amber-600'
+                      }`}
+                    >
                       Pengeluaran harian Google Ads melebihi rencana sebesar 3%.
                     </div>
                   </div>
-                  <div className="p-2 rounded-xl bg-emerald-50">
-                    <div className="font-semibold text-emerald-800 text-[11px]">
+                  <div
+                    className={`p-2 rounded-xl ${
+                      isDarkMode
+                        ? 'bg-emerald-500/10 text-emerald-200'
+                        : 'bg-emerald-50 text-emerald-800'
+                    }`}
+                  >
+                    <div className="font-semibold text-[11px]">
                       🎯 Target Realisasi 85% Tercapai
                     </div>
-                    <div className="text-[10px] text-emerald-600 mt-0.5">
+                    <div
+                      className={`text-[10px] mt-0.5 ${
+                        isDarkMode ? 'text-emerald-300/70' : 'text-emerald-600'
+                      }`}
+                    >
                       Realisasi Rp 254 Jt dari target Rp 300 Jt (+Rp 46,8 Jt di atas target).
                     </div>
                   </div>
@@ -581,13 +667,10 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
 
           {/* Tombol Pengubah Mode Gelap/Terang */}
           <button
-            onClick={() => {
-              setIsDarkMode(!isDarkMode);
-              showToast(isDarkMode ? 'Mode terang diaktifkan' : 'Mode gelap kanvas diaktifkan');
-            }}
+            onClick={handleToggleTheme}
             className={`p-2 rounded-full border transition-colors shadow-xs cursor-pointer ${
               isDarkMode
-                ? 'bg-slate-800 border-slate-700 text-amber-300 hover:bg-slate-700'
+                ? 'bg-[#1e2130] border-white/[0.08] text-amber-300 hover:bg-[#25293c]'
                 : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
             }`}
             title="Ubah Mode Tampilan"
@@ -598,7 +681,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
           {/* Tombol Utama + Baru */}
           <button
             onClick={() => setPlanCampaignModal(true)}
-            className={`px-4 py-1.5 rounded-full text-xs font-semibold shadow-xs flex items-center gap-1.5 transition-all cursor-pointer ${primaryBtnClass}`}
+            className={`px-4 py-1.5 rounded-full text-xs font-medium shadow-xs flex items-center gap-1.5 transition-all cursor-pointer ${primaryBtnClass}`}
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Baru</span>
@@ -642,23 +725,31 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
             {/* Tombol Cepat Asisten AI */}
             <button
               onClick={() => setAiDrawerOpen(true)}
-              className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold text-xs rounded-xl flex items-center gap-1.5 shadow-sm hover:brightness-110 transition cursor-pointer"
+              className={`px-4 py-2 font-medium text-xs rounded-xl flex items-center gap-1.5 shadow-xs transition-all cursor-pointer ${
+                isDarkMode
+                  ? 'bg-white/[0.08] hover:bg-white/[0.12] text-zinc-200 border border-white/10'
+                  : 'bg-slate-100 hover:bg-slate-200/90 text-slate-800 border border-slate-200/80'
+              }`}
             >
-              <Sparkles className="w-3.5 h-3.5 animate-pulse" />
+              <Sparkles className={`w-3.5 h-3.5 ${isDarkMode ? 'text-zinc-300' : 'text-slate-600'}`} />
               <span>Tanya Asisten AI</span>
             </button>
 
             <button
               onClick={handleExportCSV}
-              className="px-4 py-2 bg-white border border-slate-200/90 hover:bg-slate-50 text-slate-700 font-semibold text-xs rounded-xl flex items-center gap-1.5 shadow-xs transition-all cursor-pointer"
+              className={`px-4 py-2 border font-medium text-xs rounded-xl flex items-center gap-1.5 shadow-xs transition-all cursor-pointer ${
+                isDarkMode
+                  ? 'bg-[#1e2130] border-white/[0.08] text-zinc-300 hover:bg-[#25293c]'
+                  : 'bg-white border-slate-200/90 hover:bg-slate-50 text-slate-700'
+              }`}
             >
-              <Download className="w-3.5 h-3.5 text-slate-500" />
+              <Download className="w-3.5 h-3.5 text-slate-400" />
               <span>Ekspor Data</span>
             </button>
 
             <button
               onClick={() => setPlanCampaignModal(true)}
-              className={`px-4 py-2 font-semibold text-xs rounded-xl flex items-center gap-1.5 shadow-sm transition-all cursor-pointer ${primaryBtnClass}`}
+              className={`px-4 py-2 font-medium text-xs rounded-xl flex items-center gap-1.5 shadow-xs transition-all cursor-pointer ${primaryBtnClass}`}
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Rencanakan Kampanye</span>
@@ -672,7 +763,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
           <div
             onClick={onOpenAnalytics}
             className={`rounded-2xl p-5 border shadow-[0_2px_12px_rgba(0,0,0,0.025)] hover:shadow-md transition-all cursor-pointer group ${
-              isDarkMode ? 'bg-slate-800/90 border-slate-700' : 'bg-white border-slate-200/80'
+              isDarkMode ? 'bg-[#1e2130] border-white/[0.08] text-zinc-100 shadow-[0_4px_20px_rgba(0,0,0,0.22)]' : 'bg-white border-slate-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.025)]'
             }`}
           >
             <div className="flex items-center justify-between">
@@ -697,7 +788,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
           <div
             onClick={onOpenAnalytics}
             className={`rounded-2xl p-5 border shadow-[0_2px_12px_rgba(0,0,0,0.025)] hover:shadow-md transition-all cursor-pointer group ${
-              isDarkMode ? 'bg-slate-800/90 border-slate-700' : 'bg-white border-slate-200/80'
+              isDarkMode ? 'bg-[#1e2130] border-white/[0.08] text-zinc-100 shadow-[0_4px_20px_rgba(0,0,0,0.22)]' : 'bg-white border-slate-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.025)]'
             }`}
           >
             <div className="flex items-center justify-between">
@@ -722,7 +813,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
           <div
             onClick={() => setFunnelModalOpen(true)}
             className={`rounded-2xl p-5 border shadow-[0_2px_12px_rgba(0,0,0,0.025)] hover:shadow-md transition-all cursor-pointer group ${
-              isDarkMode ? 'bg-slate-800/90 border-slate-700' : 'bg-white border-slate-200/80'
+              isDarkMode ? 'bg-[#1e2130] border-white/[0.08] text-zinc-100 shadow-[0_4px_20px_rgba(0,0,0,0.22)]' : 'bg-white border-slate-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.025)]'
             }`}
           >
             <div className="flex items-center justify-between">
@@ -747,7 +838,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
           <div
             onClick={() => setBudgetModalOpen(true)}
             className={`rounded-2xl p-5 border shadow-[0_2px_12px_rgba(0,0,0,0.025)] hover:shadow-md transition-all cursor-pointer group ${
-              isDarkMode ? 'bg-slate-800/90 border-slate-700' : 'bg-white border-slate-200/80'
+              isDarkMode ? 'bg-[#1e2130] border-white/[0.08] text-zinc-100 shadow-[0_4px_20px_rgba(0,0,0,0.22)]' : 'bg-white border-slate-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.025)]'
             }`}
           >
             <div className="flex items-center justify-between">
@@ -774,7 +865,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
           {/* Kolom Kiri: Tren Performa Penjualan */}
           <div
             className={`lg:col-span-7 rounded-2xl p-6 border shadow-[0_2px_12px_rgba(0,0,0,0.025)] flex flex-col justify-between ${
-              isDarkMode ? 'bg-slate-800/90 border-slate-700' : 'bg-white border-slate-200/80'
+              isDarkMode ? 'bg-[#1e2130] border-white/[0.08] text-zinc-100 shadow-[0_4px_20px_rgba(0,0,0,0.22)]' : 'bg-white border-slate-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.025)]'
             }`}
           >
             <div>
@@ -799,7 +890,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                 {/* Pengubah Rentang Periode */}
                 <div
                   className={`flex items-center p-0.5 rounded-xl border text-xs font-semibold ${
-                    isDarkMode ? 'bg-slate-900 border-slate-700' : 'bg-slate-100 border-slate-200/70'
+                    isDarkMode ? 'bg-[#151722] border-white/[0.06]' : 'bg-slate-100 border-slate-200/70'
                   }`}
                 >
                   {(['7d', '30d', '90d'] as const).map((r) => (
@@ -811,8 +902,12 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                       }}
                       className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
                         performanceRange === r
-                          ? 'bg-white text-slate-900 shadow-xs'
-                          : 'text-slate-400 hover:text-slate-200'
+                          ? isDarkMode
+                            ? 'bg-[#282c3f] text-zinc-100 shadow-xs'
+                            : 'bg-white text-slate-900 shadow-xs'
+                          : isDarkMode
+                          ? 'text-zinc-400 hover:text-zinc-200'
+                          : 'text-slate-500 hover:text-slate-800'
                       }`}
                     >
                       {r === '7d' ? '7 Hari' : r === '30d' ? '30 Hari' : '90 Hari'}
@@ -848,7 +943,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                       y1="40"
                       x2="720"
                       y2="40"
-                      stroke={isDarkMode ? '#334155' : '#f1f5f9'}
+                      stroke={isDarkMode ? 'rgba(255,255,255,0.06)' : '#f1f5f9'}
                       strokeDasharray="4 4"
                     />
                     <text x="25" y="44" textAnchor="end">
@@ -860,7 +955,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                       y1="115"
                       x2="720"
                       y2="115"
-                      stroke={isDarkMode ? '#334155' : '#f1f5f9'}
+                      stroke={isDarkMode ? 'rgba(255,255,255,0.06)' : '#f1f5f9'}
                       strokeDasharray="4 4"
                     />
                     <text x="25" y="119" textAnchor="end">
@@ -872,7 +967,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                       y1="190"
                       x2="720"
                       y2="190"
-                      stroke={isDarkMode ? '#475569' : '#e2e8f0'}
+                      stroke={isDarkMode ? 'rgba(255,255,255,0.12)' : '#e2e8f0'}
                     />
                     <text x="25" y="194" textAnchor="end">
                       Rp 0
@@ -1073,7 +1168,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
           {/* Kolom Kanan: Sumber Kanal Pendapatan */}
           <div
             className={`lg:col-span-5 rounded-2xl p-6 border shadow-[0_2px_12px_rgba(0,0,0,0.025)] flex flex-col justify-between ${
-              isDarkMode ? 'bg-slate-800/90 border-slate-700' : 'bg-white border-slate-200/80'
+              isDarkMode ? 'bg-[#1e2130] border-white/[0.08] text-zinc-100 shadow-[0_4px_20px_rgba(0,0,0,0.22)]' : 'bg-white border-slate-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.025)]'
             }`}
           >
             <div>
@@ -1093,7 +1188,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
 
                 <div
                   className={`flex items-center p-0.5 rounded-xl border text-xs font-semibold ${
-                    isDarkMode ? 'bg-slate-900 border-slate-700' : 'bg-slate-100 border-slate-200/70'
+                    isDarkMode ? 'bg-[#151722] border-white/[0.06]' : 'bg-slate-100 border-slate-200/70'
                   }`}
                 >
                   {(['revenue', 'orders', 'spend'] as const).map((t) => (
@@ -1109,8 +1204,12 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                       }}
                       className={`px-2.5 py-1 rounded-lg capitalize transition-all cursor-pointer ${
                         channelTab === t
-                          ? 'bg-white text-slate-900 shadow-xs'
-                          : 'text-slate-400 hover:text-slate-200'
+                          ? isDarkMode
+                            ? 'bg-[#282c3f] text-zinc-100 shadow-xs'
+                            : 'bg-white text-slate-900 shadow-xs'
+                          : isDarkMode
+                          ? 'text-zinc-400 hover:text-zinc-200'
+                          : 'text-slate-500 hover:text-slate-800'
                       }`}
                     >
                       {t === 'revenue' ? 'Omzet' : t === 'orders' ? 'Pesanan' : 'Biaya'}
@@ -1281,7 +1380,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
             <div
               className={`mt-4 p-3 rounded-xl border text-xs leading-relaxed ${
                 isDarkMode
-                  ? 'bg-slate-900 border-slate-700 text-slate-300'
+                  ? 'bg-[#151722] border-white/[0.06] text-zinc-300'
                   : 'bg-slate-50 border-slate-200/70 text-slate-600'
               }`}
             >
@@ -1297,7 +1396,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
           {/* Kolom Kiri: Kampanye Berjalan */}
           <div
             className={`lg:col-span-7 rounded-2xl p-6 border shadow-[0_2px_12px_rgba(0,0,0,0.025)] ${
-              isDarkMode ? 'bg-slate-800/90 border-slate-700' : 'bg-white border-slate-200/80'
+              isDarkMode ? 'bg-[#1e2130] border-white/[0.08] text-zinc-100 shadow-[0_4px_20px_rgba(0,0,0,0.22)]' : 'bg-white border-slate-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.025)]'
             }`}
           >
             <div className="flex items-center justify-between mb-4">
@@ -1330,7 +1429,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                   key={camp.id}
                   className={`flex items-center justify-between gap-3 p-2.5 rounded-xl transition-colors border ${
                     isDarkMode
-                      ? 'border-transparent hover:bg-slate-700/60'
+                      ? 'border-transparent hover:bg-white/[0.04]'
                       : 'border-transparent hover:bg-slate-50/80 hover:border-slate-100'
                   }`}
                 >
@@ -1344,7 +1443,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                       <span>{camp.spent}</span>
                       <span>dari {camp.budget}</span>
                     </div>
-                    <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                    <div className="h-1.5 w-full bg-slate-100 dark:bg-white/10 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-indigo-600 rounded-full"
                         style={{ width: `${camp.percent}%` }}
@@ -1380,7 +1479,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
           {/* Kolom Kanan: Corong Konversi Transaksi */}
           <div
             className={`lg:col-span-5 rounded-2xl p-6 border shadow-[0_2px_12px_rgba(0,0,0,0.025)] flex flex-col justify-between ${
-              isDarkMode ? 'bg-slate-800/90 border-slate-700' : 'bg-white border-slate-200/80'
+              isDarkMode ? 'bg-[#1e2130] border-white/[0.08] text-zinc-100 shadow-[0_4px_20px_rgba(0,0,0,0.22)]' : 'bg-white border-slate-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.025)]'
             }`}
           >
             <div>
@@ -1425,11 +1524,13 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                         setFunnelFilter(chip);
                         showToast(`Filter corong: ${chip}`);
                       }}
-                      className={`px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all cursor-pointer ${
+                      className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all cursor-pointer ${
                         isActive
-                          ? 'bg-slate-900 text-white shadow-xs dark:bg-white dark:text-slate-900'
+                          ? isDarkMode
+                            ? 'bg-zinc-100 text-zinc-900 shadow-xs'
+                            : 'bg-slate-900 text-white shadow-xs'
                           : isDarkMode
-                          ? 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                          ? 'bg-[#25293c] text-zinc-400 hover:text-zinc-200 hover:bg-[#2e334a]'
                           : 'bg-slate-100 text-slate-600 hover:bg-slate-200/80'
                       }`}
                     >
@@ -1447,7 +1548,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                     <span className="font-semibold font-sans">Sesi Kunjungan</span>
                     <span className="font-bold">122k awal</span>
                   </div>
-                  <div className="h-6 w-full bg-slate-100 dark:bg-slate-700 rounded-lg overflow-hidden flex items-center p-1">
+                  <div className="h-6 w-full bg-slate-100 dark:bg-white/10 rounded-lg overflow-hidden flex items-center p-1">
                     <div className="h-full bg-indigo-600 rounded-md w-full flex items-center justify-end pr-2 text-[10px] font-bold text-white">
                       100%
                     </div>
@@ -1460,7 +1561,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                     <span className="font-semibold font-sans">Melihat Produk</span>
                     <span className="text-slate-400">72,6k (59,4%)</span>
                   </div>
-                  <div className="h-6 w-full bg-slate-100 dark:bg-slate-700 rounded-lg overflow-hidden flex items-center p-1">
+                  <div className="h-6 w-full bg-slate-100 dark:bg-white/10 rounded-lg overflow-hidden flex items-center p-1">
                     <div
                       className="h-full bg-indigo-500 rounded-md flex items-center justify-end pr-2 text-[10px] font-bold text-white"
                       style={{ width: '59.4%' }}
@@ -1481,7 +1582,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                     </div>
                     <span className="text-slate-400">9.201 (12,7%)</span>
                   </div>
-                  <div className="h-6 w-full bg-slate-100 dark:bg-slate-700 rounded-lg overflow-hidden flex items-center p-1">
+                  <div className="h-6 w-full bg-slate-100 dark:bg-white/10 rounded-lg overflow-hidden flex items-center p-1">
                     <div
                       className="h-full bg-indigo-400 rounded-md flex items-center justify-end pr-2 text-[10px] font-bold text-white"
                       style={{ width: '12.7%' }}
@@ -1497,7 +1598,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                     <span className="font-semibold font-sans">Masuk Pembayaran</span>
                     <span className="text-slate-400">4.892 (53,2%)</span>
                   </div>
-                  <div className="h-6 w-full bg-slate-100 dark:bg-slate-700 rounded-lg overflow-hidden flex items-center p-1">
+                  <div className="h-6 w-full bg-slate-100 dark:bg-white/10 rounded-lg overflow-hidden flex items-center p-1">
                     <div
                       className="h-full bg-indigo-400/80 rounded-md flex items-center justify-end pr-2 text-[10px] font-bold text-white"
                       style={{ width: '53.2%' }}
@@ -1513,7 +1614,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                     <span className="font-semibold font-sans">Pesanan Berhasil</span>
                     <span className="text-emerald-500 font-bold">2.705 (55,3%)</span>
                   </div>
-                  <div className="h-6 w-full bg-slate-100 dark:bg-slate-700 rounded-lg overflow-hidden flex items-center p-1">
+                  <div className="h-6 w-full bg-slate-100 dark:bg-white/10 rounded-lg overflow-hidden flex items-center p-1">
                     <div
                       className="h-full bg-emerald-500 rounded-md flex items-center justify-end pr-2 text-[10px] font-bold text-white"
                       style={{ width: '55.3%' }}
@@ -1529,7 +1630,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
             <div
               className={`mt-4 p-3 rounded-xl border text-xs leading-relaxed ${
                 isDarkMode
-                  ? 'bg-slate-900 border-slate-700 text-slate-300'
+                  ? 'bg-[#151722] border-white/[0.06] text-zinc-300'
                   : 'bg-slate-50 border-slate-200/70 text-slate-600'
               }`}
             >
@@ -1544,7 +1645,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
           {/* KOLOM 1: Prospek B2B Utama */}
           <div
             className={`rounded-2xl p-6 border shadow-[0_2px_12px_rgba(0,0,0,0.025)] ${
-              isDarkMode ? 'bg-slate-800/90 border-slate-700' : 'bg-white border-slate-200/80'
+              isDarkMode ? 'bg-[#1e2130] border-white/[0.08] text-zinc-100 shadow-[0_4px_20px_rgba(0,0,0,0.22)]' : 'bg-white border-slate-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.025)]'
             }`}
           >
             <div className="flex items-center justify-between mb-4">
@@ -1614,7 +1715,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
           {/* KOLOM 2: Anggaran Pemasaran Oktober */}
           <div
             className={`rounded-2xl p-6 border shadow-[0_2px_12px_rgba(0,0,0,0.025)] flex flex-col justify-between ${
-              isDarkMode ? 'bg-slate-800/90 border-slate-700' : 'bg-white border-slate-200/80'
+              isDarkMode ? 'bg-[#1e2130] border-white/[0.08] text-zinc-100 shadow-[0_4px_20px_rgba(0,0,0,0.22)]' : 'bg-white border-slate-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.025)]'
             }`}
           >
             <div>
@@ -1725,7 +1826,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
           {/* KOLOM 3: Aktivitas Tim Pemasaran */}
           <div
             className={`rounded-2xl p-6 border shadow-[0_2px_12px_rgba(0,0,0,0.025)] ${
-              isDarkMode ? 'bg-slate-800/90 border-slate-700' : 'bg-white border-slate-200/80'
+              isDarkMode ? 'bg-[#1e2130] border-white/[0.08] text-zinc-100 shadow-[0_4px_20px_rgba(0,0,0,0.22)]' : 'bg-white border-slate-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.025)]'
             }`}
           >
             <div className="flex items-center justify-between mb-4">
@@ -1822,34 +1923,60 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
       <div className="fixed bottom-6 right-6 z-40">
         <button
           onClick={() => setAiDrawerOpen(true)}
-          className="flex items-center gap-2.5 px-4 py-3 rounded-full bg-slate-900 text-white shadow-2xl hover:scale-105 border border-slate-700 hover:border-indigo-500 transition-all cursor-pointer group"
+          className={`flex items-center gap-2.5 px-4 py-2.5 rounded-full shadow-lg border transition-all cursor-pointer group ${
+            isDarkMode
+              ? 'bg-[#1e2130] hover:bg-[#25293c] text-zinc-100 border-white/10'
+              : 'bg-slate-900 hover:bg-slate-800 text-white border-slate-700'
+          }`}
         >
-          <div className="w-6 h-6 rounded-full bg-indigo-600 flex items-center justify-center">
-            <Sparkles className="w-3.5 h-3.5 text-white animate-pulse" />
+          <div
+            className={`w-6 h-6 rounded-full flex items-center justify-center ${
+              isDarkMode ? 'bg-white/10 text-zinc-200' : 'bg-white/20 text-white'
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5" />
           </div>
-          <span className="text-xs font-bold tracking-tight">AI Copilot</span>
+          <span className="text-xs font-semibold tracking-tight">AI Copilot</span>
         </button>
       </div>
 
       {/* MODAL: RENCANAKAN KAMPANYE BARU */}
       {planCampaignModal && (
         <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+          <div
+            className={`rounded-3xl max-w-lg w-full p-6 shadow-2xl border animate-in fade-in zoom-in-95 ${
+              isDarkMode
+                ? 'bg-[#1e2130] text-zinc-100 border-white/10'
+                : 'bg-white text-slate-900 border-slate-100'
+            }`}
+          >
+            <div
+              className={`flex items-center justify-between pb-4 border-b ${
+                isDarkMode ? 'border-white/[0.06]' : 'border-slate-100'
+              }`}
+            >
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
+                <div
+                  className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold ${
+                    isDarkMode ? 'bg-white/10 text-zinc-200' : 'bg-slate-100 text-slate-700'
+                  }`}
+                >
                   <Plus className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-base font-extrabold text-slate-900">Rencanakan Kampanye Baru</h3>
-                  <p className="text-xs text-slate-400">
+                  <h3 className="text-base font-extrabold">Rencanakan Kampanye Baru</h3>
+                  <p className={`text-xs ${isDarkMode ? 'text-zinc-400' : 'text-slate-400'}`}>
                     Tambahkan kampanye ke pipeline pemasaran kuartal ini
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setPlanCampaignModal(false)}
-                className="p-1.5 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-700"
+                className={`p-1.5 rounded-full transition ${
+                  isDarkMode
+                    ? 'hover:bg-white/[0.08] text-zinc-400 hover:text-white'
+                    : 'hover:bg-slate-100 text-slate-400 hover:text-slate-700'
+                }`}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1857,7 +1984,11 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
 
             <form onSubmit={handleCreateCampaignSubmit} className="space-y-4 mt-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label
+                  className={`block text-xs font-bold mb-1 ${
+                    isDarkMode ? 'text-zinc-300' : 'text-slate-700'
+                  }`}
+                >
                   Nama Kampanye
                 </label>
                 <input
@@ -1866,19 +1997,31 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                   placeholder="Contoh: Promo Akhir Tahun 2026"
                   value={newCampTitle}
                   onChange={(e) => setNewCampTitle(e.target.value)}
-                  className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                  className={`w-full text-xs px-3.5 py-2.5 rounded-xl border outline-none transition ${
+                    isDarkMode
+                      ? 'bg-[#151722] border-white/10 text-zinc-100 placeholder:text-zinc-500 focus:border-white/20'
+                      : 'bg-white border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-slate-400'
+                  }`}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label
+                    className={`block text-xs font-bold mb-1 ${
+                      isDarkMode ? 'text-zinc-300' : 'text-slate-700'
+                    }`}
+                  >
                     Kanal Pemasaran
                   </label>
                   <select
                     value={newCampChannel}
                     onChange={(e) => setNewCampChannel(e.target.value)}
-                    className="w-full text-xs px-3 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-500/20 bg-white"
+                    className={`w-full text-xs px-3 py-2.5 rounded-xl border outline-none transition ${
+                      isDarkMode
+                        ? 'bg-[#151722] border-white/10 text-zinc-100'
+                        : 'bg-white border-slate-200 text-slate-900'
+                    }`}
                   >
                     <option value="Penelusuran Berbayar">Penelusuran Berbayar (Google Ads)</option>
                     <option value="Media Sosial Berbayar">Media Sosial (Meta / TikTok)</option>
@@ -1888,7 +2031,11 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label
+                    className={`block text-xs font-bold mb-1 ${
+                      isDarkMode ? 'text-zinc-300' : 'text-slate-700'
+                    }`}
+                  >
                     Target ROAS
                   </label>
                   <input
@@ -1896,20 +2043,32 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                     step="0.1"
                     value={newCampRoas}
                     onChange={(e) => setNewCampRoas(e.target.value)}
-                    className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-500/20 font-mono"
+                    className={`w-full text-xs px-3.5 py-2.5 rounded-xl border outline-none font-mono transition ${
+                      isDarkMode
+                        ? 'bg-[#151722] border-white/10 text-zinc-100'
+                        : 'bg-white border-slate-200 text-slate-900'
+                    }`}
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label
+                  className={`block text-xs font-bold mb-1 ${
+                    isDarkMode ? 'text-zinc-300' : 'text-slate-700'
+                  }`}
+                >
                   Alokasi Anggaran (Rupiah)
                 </label>
                 <input
                   type="number"
                   value={newCampBudget}
                   onChange={(e) => setNewCampBudget(e.target.value)}
-                  className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-500/20 font-mono"
+                  className={`w-full text-xs px-3.5 py-2.5 rounded-xl border outline-none font-mono transition ${
+                    isDarkMode
+                      ? 'bg-[#151722] border-white/10 text-zinc-100'
+                      : 'bg-white border-slate-200 text-slate-900'
+                  }`}
                 />
               </div>
 
@@ -1917,13 +2076,17 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                 <button
                   type="button"
                   onClick={() => setPlanCampaignModal(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
+                  className={`px-4 py-2 text-xs font-medium rounded-xl transition ${
+                    isDarkMode
+                      ? 'text-zinc-400 hover:text-white hover:bg-white/[0.06]'
+                      : 'text-slate-600 hover:bg-slate-100'
+                  }`}
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className={`px-5 py-2 rounded-xl text-xs font-semibold shadow-xs ${primaryBtnClass}`}
+                  className={`px-5 py-2 rounded-xl text-xs font-medium shadow-xs ${primaryBtnClass}`}
                 >
                   Luncurkan Kampanye
                 </button>
@@ -1936,34 +2099,60 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
       {/* MODAL: DETAIL PROSPEK B2B */}
       {selectedLead && (
         <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+          <div
+            className={`rounded-3xl max-w-md w-full p-6 shadow-2xl border animate-in fade-in zoom-in-95 ${
+              isDarkMode
+                ? 'bg-[#1e2130] text-zinc-100 border-white/10'
+                : 'bg-white text-slate-900 border-slate-100'
+            }`}
+          >
+            <div
+              className={`flex items-center justify-between pb-4 border-b ${
+                isDarkMode ? 'border-white/[0.06]' : 'border-slate-100'
+              }`}
+            >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-slate-900 text-white font-bold flex items-center justify-center text-sm">
+                <div
+                  className={`w-10 h-10 rounded-full font-bold flex items-center justify-center text-sm ${
+                    isDarkMode ? 'bg-white/10 text-white' : 'bg-slate-900 text-white'
+                  }`}
+                >
                   {selectedLead.initials}
                 </div>
                 <div>
-                  <h3 className="text-base font-extrabold text-slate-900">{selectedLead.name}</h3>
-                  <p className="text-xs text-slate-400">{selectedLead.contact}</p>
+                  <h3 className="text-base font-extrabold">{selectedLead.name}</h3>
+                  <p className={`text-xs ${isDarkMode ? 'text-zinc-400' : 'text-slate-400'}`}>
+                    {selectedLead.contact}
+                  </p>
                 </div>
               </div>
               <button
                 onClick={() => setSelectedLead(null)}
-                className="p-1.5 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-700"
+                className={`p-1.5 rounded-full transition ${
+                  isDarkMode
+                    ? 'hover:bg-white/[0.08] text-zinc-400 hover:text-white'
+                    : 'hover:bg-slate-100 text-slate-400 hover:text-slate-700'
+                }`}
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <div className="space-y-4 my-5 text-xs">
-              <div className="bg-slate-50 p-3.5 rounded-2xl flex items-center justify-between">
+              <div
+                className={`p-3.5 rounded-2xl flex items-center justify-between ${
+                  isDarkMode ? 'bg-[#151722] border border-white/[0.06]' : 'bg-slate-50'
+                }`}
+              >
                 <div>
-                  <div className="text-[10px] uppercase font-bold text-slate-400 font-mono">
+                  <div
+                    className={`text-[10px] uppercase font-bold font-mono ${
+                      isDarkMode ? 'text-zinc-400' : 'text-slate-400'
+                    }`}
+                  >
                     POTENSI NILAI DEAL
                   </div>
-                  <div className="text-lg font-black text-slate-900 font-mono mt-0.5">
-                    {selectedLead.value}
-                  </div>
+                  <div className="text-lg font-black font-mono mt-0.5">{selectedLead.value}</div>
                 </div>
                 <div
                   className={`px-2.5 py-1 rounded-full text-xs font-bold border ${selectedLead.scoreColor}`}
@@ -1972,7 +2161,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                 </div>
               </div>
 
-              <div className="space-y-2 text-slate-600">
+              <div className={`space-y-2 ${isDarkMode ? 'text-zinc-300' : 'text-slate-600'}`}>
                 <div className="flex items-center gap-2">
                   <Mail className="w-4 h-4 text-slate-400" />
                   <span>{selectedLead.email}</span>
@@ -1994,7 +2183,11 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                   showToast(`Membuka email tindak lanjut untuk ${selectedLead.name}...`);
                   setSelectedLead(null);
                 }}
-                className="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                className={`flex-1 py-2.5 font-medium text-xs rounded-xl flex items-center justify-center gap-1.5 cursor-pointer shadow-xs transition ${
+                  isDarkMode
+                    ? 'bg-zinc-100 hover:bg-white text-zinc-900'
+                    : 'bg-slate-900 hover:bg-slate-800 text-white'
+                }`}
               >
                 <Mail className="w-3.5 h-3.5" />
                 <span>Kirim Tindak Lanjut</span>
@@ -2004,7 +2197,11 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                   setSelectedLead(null);
                   onOpenLeads?.();
                 }}
-                className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs rounded-xl cursor-pointer"
+                className={`px-4 py-2.5 font-medium text-xs rounded-xl cursor-pointer transition ${
+                  isDarkMode
+                    ? 'bg-white/[0.08] hover:bg-white/[0.12] text-zinc-200 border border-white/10'
+                    : 'bg-slate-100 hover:bg-slate-200 text-slate-800'
+                }`}
               >
                 Buka di Alur Prospek
               </button>
@@ -2016,40 +2213,62 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
       {/* MODAL: DETAIL CORONG KONVERSI */}
       {funnelModalOpen && (
         <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div
+            className={`rounded-3xl max-w-lg w-full p-6 shadow-2xl border animate-in fade-in zoom-in-95 space-y-4 ${
+              isDarkMode
+                ? 'bg-[#1e2130] text-zinc-100 border-white/10'
+                : 'bg-white text-slate-900 border-slate-100'
+            }`}
+          >
+            <div
+              className={`flex items-center justify-between pb-3 border-b ${
+                isDarkMode ? 'border-white/[0.06]' : 'border-slate-100'
+              }`}
+            >
               <div>
-                <h3 className="text-base font-extrabold text-slate-900">
-                  Analisis Drop-off Corong Belanja
-                </h3>
-                <p className="text-xs text-slate-400">
+                <h3 className="text-base font-extrabold">Analisis Drop-off Corong Belanja</h3>
+                <p className={`text-xs ${isDarkMode ? 'text-zinc-400' : 'text-slate-400'}`}>
                   Audit 122.000 kunjungan dalam 30 hari terakhir
                 </p>
               </div>
               <button
                 onClick={() => setFunnelModalOpen(false)}
-                className="p-1.5 rounded-full hover:bg-slate-100 text-slate-400"
+                className={`p-1.5 rounded-full transition ${
+                  isDarkMode
+                    ? 'hover:bg-white/[0.08] text-zinc-400'
+                    : 'hover:bg-slate-100 text-slate-400'
+                }`}
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <div className="space-y-3 text-xs">
-              <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800">
+              <div
+                className={`p-3.5 rounded-2xl border ${
+                  isDarkMode
+                    ? 'bg-rose-500/10 border-rose-500/20 text-rose-300'
+                    : 'bg-rose-50 border-rose-200 text-rose-800'
+                }`}
+              >
                 <div className="font-bold flex items-center gap-1.5">
-                  <AlertTriangle className="w-4 h-4 text-rose-600" />
+                  <AlertTriangle className="w-4 h-4 text-rose-500" />
                   <span>Titik Penurunan Kritis: Keranjang Belanja</span>
                 </div>
                 <p className="mt-1 text-[11px] leading-relaxed">
                   Dari 72.600 pengunjung yang melihat produk, hanya 9.201 (12,7%) yang
                   memasukkan ke keranjang. Kehilangan potensi omzet diperkirakan mencapai{' '}
-                  <strong>Rp 180 Juta</strong>.
+                  <strong className="font-semibold">Rp 180 Juta</strong>.
                 </p>
               </div>
 
               <div className="space-y-2">
-                <div className="font-bold text-slate-800">Rekomendasi Tindakan AI:</div>
-                <ul className="list-disc pl-5 space-y-1 text-slate-600 text-[11px]">
+                <div className="font-bold">Rekomendasi Tindakan AI:</div>
+                <ul
+                  className={`list-disc pl-5 space-y-1 text-[11px] ${
+                    isDarkMode ? 'text-zinc-300' : 'text-slate-600'
+                  }`}
+                >
                   <li>Tambahkan tombol &quot;Beli Instan via QRIS / WhatsApp&quot; pada detail produk.</li>
                   <li>Tampilkan estimasi ongkos kirim otomatis sebelum masuk keranjang.</li>
                   <li>Kirimkan email pengingat otomatis 1 jam setelah pengunjung meninggalkan keranjang.</li>
@@ -2063,7 +2282,11 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                   setFunnelModalOpen(false);
                   showToast('Rekomendasi optimasi corong berhasil dicatat ke daftar tugas!');
                 }}
-                className="px-5 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-semibold"
+                className={`px-5 py-2.5 rounded-xl text-xs font-medium transition ${
+                  isDarkMode
+                    ? 'bg-zinc-100 hover:bg-white text-zinc-900'
+                    : 'bg-slate-900 hover:bg-slate-800 text-white'
+                }`}
               >
                 Terapkan Solusi ke Tugas Tim
               </button>
@@ -2075,17 +2298,31 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
       {/* MODAL: RENCANA ANGGARAN PEMASARAN */}
       {budgetModalOpen && (
         <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div
+            className={`rounded-3xl max-w-lg w-full p-6 shadow-2xl border animate-in fade-in zoom-in-95 space-y-4 ${
+              isDarkMode
+                ? 'bg-[#1e2130] text-zinc-100 border-white/10'
+                : 'bg-white text-slate-900 border-slate-100'
+            }`}
+          >
+            <div
+              className={`flex items-center justify-between pb-3 border-b ${
+                isDarkMode ? 'border-white/[0.06]' : 'border-slate-100'
+              }`}
+            >
               <div>
-                <h3 className="text-base font-extrabold text-slate-900">
-                  Alokasi Anggaran Pemasaran Oktober
-                </h3>
-                <p className="text-xs text-slate-400">Total Anggaran: Rp 41.300.000 / Bulan</p>
+                <h3 className="text-base font-extrabold">Alokasi Anggaran Pemasaran Oktober</h3>
+                <p className={`text-xs ${isDarkMode ? 'text-zinc-400' : 'text-slate-400'}`}>
+                  Total Anggaran: Rp 41.300.000 / Bulan
+                </p>
               </div>
               <button
                 onClick={() => setBudgetModalOpen(false)}
-                className="p-1.5 rounded-full hover:bg-slate-100 text-slate-400"
+                className={`p-1.5 rounded-full transition ${
+                  isDarkMode
+                    ? 'hover:bg-white/[0.08] text-zinc-400'
+                    : 'hover:bg-slate-100 text-slate-400'
+                }`}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -2094,30 +2331,42 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
             <div className="space-y-3.5 text-xs font-mono">
               <div>
                 <div className="flex justify-between mb-1">
-                  <span className="font-sans font-semibold text-slate-700">Penelusuran Berbayar</span>
-                  <span className="text-rose-600 font-bold">Rp 18.120.000 (3% melebihi target)</span>
+                  <span className="font-sans font-semibold">Penelusuran Berbayar</span>
+                  <span className="text-rose-500 font-bold">Rp 18.120.000 (3% melebihi target)</span>
                 </div>
-                <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                <div
+                  className={`h-2 w-full rounded-full overflow-hidden ${
+                    isDarkMode ? 'bg-[#151722]' : 'bg-slate-100'
+                  }`}
+                >
                   <div className="h-full bg-amber-500 rounded-full w-[78%]" />
                 </div>
               </div>
 
               <div>
                 <div className="flex justify-between mb-1">
-                  <span className="font-sans font-semibold text-slate-700">Media Sosial Berbayar</span>
-                  <span className="text-emerald-600 font-bold">Rp 16.000.000 (Sesuai target)</span>
+                  <span className="font-sans font-semibold">Media Sosial Berbayar</span>
+                  <span className="text-emerald-500 font-bold">Rp 16.000.000 (Sesuai target)</span>
                 </div>
-                <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                <div
+                  className={`h-2 w-full rounded-full overflow-hidden ${
+                    isDarkMode ? 'bg-[#151722]' : 'bg-slate-100'
+                  }`}
+                >
                   <div className="h-full bg-blue-600 rounded-full w-[69%]" />
                 </div>
               </div>
 
               <div>
                 <div className="flex justify-between mb-1">
-                  <span className="font-sans font-semibold text-slate-700">Endorsement Kreator</span>
-                  <span className="text-purple-600 font-bold">Rp 4.075.000 (10% di bawah target)</span>
+                  <span className="font-sans font-semibold">Endorsement Kreator</span>
+                  <span className="text-purple-400 font-bold">Rp 4.075.000 (10% di bawah target)</span>
                 </div>
-                <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                <div
+                  className={`h-2 w-full rounded-full overflow-hidden ${
+                    isDarkMode ? 'bg-[#151722]' : 'bg-slate-100'
+                  }`}
+                >
                   <div className="h-full bg-purple-500 rounded-full w-[45%]" />
                 </div>
               </div>
@@ -2126,7 +2375,11 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
             <div className="pt-2 flex justify-end gap-2">
               <button
                 onClick={() => setBudgetModalOpen(false)}
-                className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
+                className={`px-4 py-2 text-xs font-medium rounded-xl transition ${
+                  isDarkMode
+                    ? 'text-zinc-400 hover:text-white hover:bg-white/[0.06]'
+                    : 'text-slate-600 hover:bg-slate-100'
+                }`}
               >
                 Tutup
               </button>
@@ -2135,7 +2388,11 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                   setBudgetModalOpen(false);
                   showToast('Penyeimbangan anggaran otomatis berhasil diterapkan!');
                 }}
-                className="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-semibold"
+                className={`px-4 py-2 rounded-xl text-xs font-medium transition ${
+                  isDarkMode
+                    ? 'bg-zinc-100 hover:bg-white text-zinc-900'
+                    : 'bg-slate-900 hover:bg-slate-800 text-white'
+                }`}
               >
                 Seimbangkan Otomatis
               </button>
@@ -2147,12 +2404,28 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
       {/* SLIDE-OVER DRAWER: ASISTEN AI EKSEKUTIF */}
       {aiDrawerOpen && (
         <div className="fixed inset-0 z-50 bg-slate-950/40 backdrop-blur-2xs flex justify-end">
-          <div className="w-full max-w-md bg-white h-full shadow-2xl border-l border-slate-200 flex flex-col justify-between animate-in slide-in-from-right duration-200">
+          <div
+            className={`w-full max-w-md h-full shadow-2xl border-l flex flex-col justify-between animate-in slide-in-from-right duration-200 ${
+              isDarkMode
+                ? 'bg-[#1e2130] border-white/10 text-zinc-100'
+                : 'bg-white border-slate-200 text-slate-900'
+            }`}
+          >
             {/* Header Drawer */}
-            <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-900 text-white">
+            <div
+              className={`p-4 border-b flex items-center justify-between ${
+                isDarkMode
+                  ? 'bg-[#151722] border-white/[0.06] text-zinc-100'
+                  : 'bg-slate-900 text-white border-slate-800'
+              }`}
+            >
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
-                  <Sparkles className="w-4 h-4 text-white" />
+                <div
+                  className={`w-8 h-8 rounded-xl flex items-center justify-center ${
+                    isDarkMode ? 'bg-white/10 text-white' : 'bg-white/20 text-white'
+                  }`}
+                >
+                  <Sparkles className="w-4 h-4" />
                 </div>
                 <div>
                   <div className="text-xs font-bold">Asisten AI Eksekutif DailyDose</div>
@@ -2163,7 +2436,11 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
               </div>
               <button
                 onClick={() => setAiDrawerOpen(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+                className={`p-1 rounded-lg transition ${
+                  isDarkMode
+                    ? 'text-zinc-400 hover:text-white hover:bg-white/10'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                }`}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -2181,29 +2458,51 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                   <div
                     className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 leading-relaxed ${
                       msg.sender === 'user'
-                        ? 'bg-indigo-600 text-white rounded-br-none shadow-xs'
+                        ? isDarkMode
+                          ? 'bg-zinc-100 text-zinc-900 rounded-br-none shadow-xs font-medium'
+                          : 'bg-slate-900 text-white rounded-br-none shadow-xs font-medium'
+                        : isDarkMode
+                        ? 'bg-[#151722] text-zinc-200 rounded-bl-none border border-white/[0.08]'
                         : 'bg-slate-100 text-slate-800 rounded-bl-none border border-slate-200/60'
                     }`}
                   >
                     {msg.text}
                   </div>
-                  <span className="text-[9.5px] text-slate-400 font-mono mt-1 px-1">
+                  <span
+                    className={`text-[9.5px] font-mono mt-1 px-1 ${
+                      isDarkMode ? 'text-zinc-500' : 'text-slate-400'
+                    }`}
+                  >
                     {msg.time}
                   </span>
                 </div>
               ))}
 
               {aiThinking && (
-                <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-2xl text-xs text-slate-500 animate-pulse">
-                  <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                <div
+                  className={`flex items-center gap-2 p-3 rounded-2xl text-xs animate-pulse ${
+                    isDarkMode
+                      ? 'bg-[#151722] text-zinc-400 border border-white/[0.06]'
+                      : 'bg-slate-50 text-slate-500 border border-slate-200/50'
+                  }`}
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-slate-400" />
                   <span>Asisten AI sedang menganalisis data eksekutif...</span>
                 </div>
               )}
             </div>
 
             {/* Pertanyaan Cepat Siap Klik */}
-            <div className="p-3 bg-slate-50 border-t border-slate-100 space-y-1.5">
-              <div className="text-[10px] uppercase font-bold text-slate-400 font-mono">
+            <div
+              className={`p-3 border-t space-y-1.5 ${
+                isDarkMode ? 'bg-[#151722] border-white/[0.06]' : 'bg-slate-50 border-slate-100'
+              }`}
+            >
+              <div
+                className={`text-[10px] uppercase font-bold font-mono ${
+                  isDarkMode ? 'text-zinc-500' : 'text-slate-400'
+                }`}
+              >
                 PERTANYAAN CEPAT:
               </div>
               <div className="flex flex-wrap gap-1.5">
@@ -2217,7 +2516,11 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                     onClick={() => {
                       setAiPrompt(q);
                     }}
-                    className="text-[10.5px] px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200 transition text-left cursor-pointer"
+                    className={`text-[10.5px] px-2.5 py-1 rounded-full transition text-left cursor-pointer border ${
+                      isDarkMode
+                        ? 'bg-[#1e2130] border-white/10 text-zinc-300 hover:bg-white/10'
+                        : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100'
+                    }`}
                   >
                     {q}
                   </button>
@@ -2226,19 +2529,31 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
             </div>
 
             {/* Kolom Input Chat */}
-            <div className="p-3 border-t border-slate-100 flex items-center gap-2 bg-white">
+            <div
+              className={`p-3 border-t flex items-center gap-2 ${
+                isDarkMode ? 'bg-[#1e2130] border-white/[0.06]' : 'bg-white border-slate-100'
+              }`}
+            >
               <input
                 type="text"
                 placeholder="Tanyakan analisis bisnis atau strategi pemasaran..."
                 value={aiPrompt}
                 onChange={(e) => setAiPrompt(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSendAiMessage()}
-                className="flex-1 text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                className={`flex-1 text-xs px-3.5 py-2.5 rounded-xl border outline-none transition ${
+                  isDarkMode
+                    ? 'bg-[#151722] border-white/10 text-zinc-100 placeholder:text-zinc-500'
+                    : 'border-slate-200 text-slate-900 placeholder:text-slate-400'
+                }`}
               />
               <button
                 onClick={handleSendAiMessage}
                 disabled={!aiPrompt.trim() || aiThinking}
-                className="p-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white disabled:opacity-40 transition cursor-pointer"
+                className={`p-2.5 rounded-xl transition cursor-pointer disabled:opacity-40 ${
+                  isDarkMode
+                    ? 'bg-zinc-100 text-zinc-900 hover:bg-white'
+                    : 'bg-slate-900 text-white hover:bg-slate-800'
+                }`}
               >
                 <Send className="w-4 h-4" />
               </button>

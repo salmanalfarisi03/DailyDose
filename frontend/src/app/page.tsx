@@ -67,6 +67,25 @@ export default function Home() {
   // User Profile & Role State (Defaults to Owner)
   const [currentUser, setCurrentUser] = useState<UserProfile>(PRESET_USERS[0]);
 
+  // Dark Mode State with LocalStorage Persistence
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem('dd_theme');
+      if (savedTheme) return savedTheme === 'dark';
+    }
+    return false;
+  });
+
+  const toggleDarkMode = () => {
+    setIsDarkMode((prev) => {
+      const next = !prev;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('dd_theme', next ? 'dark' : 'light');
+      }
+      return next;
+    });
+  };
+
   // Fetch Health Status
   const fetchHealth = useCallback(async () => {
     try {
@@ -416,7 +435,11 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen flex bg-[#faf8f5] text-slate-900 antialiased font-sans selection:bg-slate-900 selection:text-white">
+    <div
+      className={`min-h-screen flex ${
+        isDarkMode ? 'bg-[#151722] text-zinc-100' : 'bg-[#faf8f5] text-slate-900'
+      } antialiased font-sans selection:bg-slate-900 selection:text-white`}
+    >
       {/* Sidebar Navigation */}
       <Sidebar
         activeTab={activeTab}
@@ -424,12 +447,15 @@ export default function Home() {
         currentUser={currentUser}
         onOpenAccountModal={() => setModalAccountAuth(true)}
         onLogout={handleLogout}
+        isDarkMode={isDarkMode}
       />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 bg-[#faf8f5]">
+      <div className={`flex-1 flex flex-col min-w-0 ${isDarkMode ? 'bg-[#151722]' : 'bg-[#faf8f5]'}`}>
         {activeTab === 'dashboard' ? (
           <ExecutivePerformanceDashboard
+            isDarkMode={isDarkMode}
+            onToggleDarkMode={toggleDarkMode}
             onPlanCampaign={() => handleQuickAction('task')}
             onOpenLeads={() => setActiveTab('leads')}
             onOpenCampaigns={() => setActiveTab('campaigns')}
