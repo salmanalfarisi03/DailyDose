@@ -55,3 +55,9 @@ node_modules/
 .next/
 out/
 .vercel
+
+# Local Documentation & Blueprints (Do NOT push to GitHub)
+BLUEPRINT.md
+blueprint*.md
+*.blueprint.md
+
