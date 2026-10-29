@@ -84,7 +84,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const currentTab = tabTitles[activeTab];
 
   return (
-    <header className="h-22 border-b border-slate-200/70 bg-white/80 backdrop-blur-md px-8 flex items-center justify-between sticky top-0 z-30">
+    <header className="h-22 border-b border-slate-200/70 bg-white backdrop-blur-md px-8 flex items-center justify-between sticky top-0 z-30">
       <div>
         <div className="flex items-center gap-2.5">
           <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight leading-none">

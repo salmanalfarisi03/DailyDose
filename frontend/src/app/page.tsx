@@ -460,6 +460,7 @@ export default function Home() {
             onOpenLeads={() => setActiveTab('leads')}
             onOpenCampaigns={() => setActiveTab('campaigns')}
             onOpenAnalytics={() => setActiveTab('analytics')}
+            onOpenDiagnosticsModal={() => setModalDiagnostics(true)}
           />
         ) : (
           <>
@@ -475,12 +476,12 @@ export default function Home() {
 
             <main className="p-8 max-w-[1536px] w-full mx-auto flex-1">
               {activeTab === 'campaigns' && (
-                <CampaignsView onPlanCampaign={() => handleQuickAction('task')} />
+                <CampaignsView isDarkMode={isDarkMode} />
               )}
 
-              {activeTab === 'leads' && <LeadsView />}
+              {activeTab === 'leads' && <LeadsView isDarkMode={isDarkMode} />}
 
-              {activeTab === 'audiences' && <AudiencesView />}
+              {activeTab === 'audiences' && <AudiencesView isDarkMode={isDarkMode} />}
 
               {activeTab === 'reports' && <ReportsView invoices={invoices} />}
 

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Banknote,
   ShoppingBag,
@@ -31,6 +31,7 @@ interface ExecutivePerformanceDashboardProps {
   onOpenCampaigns?: () => void;
   onOpenAnalytics?: () => void;
   onOpenAiSuite?: () => void;
+  onOpenDiagnosticsModal?: () => void;
   isDarkMode?: boolean;
   onToggleDarkMode?: () => void;
 }
@@ -53,6 +54,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
   onOpenLeads,
   onOpenCampaigns,
   onOpenAnalytics,
+  onOpenDiagnosticsModal,
   isDarkMode: propIsDarkMode,
   onToggleDarkMode,
 }) => {
@@ -60,6 +62,57 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
   const [accentTheme, setAccentTheme] = useState<'indigo' | 'terracotta'>('indigo');
   const [internalDarkMode, setInternalDarkMode] = useState(false);
   const isDarkMode = propIsDarkMode !== undefined ? propIsDarkMode : internalDarkMode;
+
+  // Real-time Live Clock State
+  const [mounted, setMounted] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    setMounted(true);
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatLiveHeaderTime = (date: Date) => {
+    const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+    const dayName = days[date.getDay()];
+    const dayDate = date.getDate();
+    const monthName = months[date.getMonth()];
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${dayName}, ${dayDate} ${monthName} • ${hours}:${minutes}:${seconds} WIB`;
+  };
+
+  const formatLiveBannerDate = (date: Date) => {
+    const days = ['MINGGU', 'SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT', 'SABTU'];
+    const months = [
+      'JANUARI',
+      'FEBRUARI',
+      'MARET',
+      'APRIL',
+      'MEI',
+      'JUNI',
+      'JULI',
+      'AGUSTUS',
+      'SEPTEMBER',
+      'OKTOBER',
+      'NOVEMBER',
+      'DESEMBER',
+    ];
+    return `${days[date.getDay()]}, ${date.getDate()} ${months[date.getMonth()]} • RINGKASAN EKSEKUTIF`;
+  };
+
+  const getGreeting = (date: Date) => {
+    const hour = date.getHours();
+    if (hour >= 4 && hour < 11) return 'Selamat pagi';
+    if (hour >= 11 && hour < 15) return 'Selamat siang';
+    if (hour >= 15 && hour < 18) return 'Selamat sore';
+    return 'Selamat malam';
+  };
 
   const handleToggleTheme = () => {
     if (onToggleDarkMode) {
@@ -97,7 +150,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
   >([
     {
       sender: 'ai',
-      text: 'Halo Pak Aditya! Saya adalah Asisten AI Eksekutif DailyDose. Saya mengawasi 9 kampanye pemasaran aktif, realisasi anggaran Oktober, dan pipeline penjualan Rp 346 Juta. Ada yang ingin Anda optimalkan hari ini?',
+      text: 'Halo Pak Aditya! Saya adalah Asisten AI Eksekutif DailyDose. Saya mengawasi 9 q pemasaran aktif, realisasi anggaran Oktober, dan pipeline penjualan Rp 346 Juta. Ada yang ingin Anda optimalkan hari ini?',
       time: '09:48',
     },
   ]);
@@ -442,7 +495,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
       <header
         className={`sticky top-0 z-30 backdrop-blur-md border-b px-6 py-2.5 flex items-center justify-between transition-colors ${
           isDarkMode
-            ? 'bg-[#151722]/90 border-white/[0.06]'
+            ? 'bg-[#191970]/90 border-white/[0.06]'
             : 'bg-[#faf8f5]/90 border-stone-200/60'
         }`}
       >
@@ -457,16 +510,19 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
             <span>Ringkasan</span>
           </div>
           <span className={isDarkMode ? 'text-zinc-600' : 'text-slate-300'}>/</span>
-          <div
-            className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${
+          <button
+            type="button"
+            onClick={onOpenDiagnosticsModal}
+            title="Klik untuk membuka Diagnostik Sistem & Status Database PostgreSQL"
+            className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border transition cursor-pointer ${
               isDarkMode
-                ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
-                : 'bg-emerald-50 border-emerald-200/80 text-emerald-800'
+                ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20'
+                : 'bg-emerald-50 border-emerald-200/80 text-emerald-800 hover:bg-emerald-100'
             }`}
           >
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             DailyDose AI Core v2.4
-          </div>
+          </button>
         </div>
 
         {/* Tengah: Kolom Pencarian */}
@@ -481,9 +537,27 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
             <Search className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
             <input
               type="text"
-              placeholder="Cari kampanye, prospek, audiens..."
+              placeholder="Cari kampanye, prospek, audiens... (Tekan Enter)"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  const q = searchQuery.toLowerCase().trim();
+                  if (!q) return;
+                  if (q.includes('kampanye') || q.includes('iklan')) {
+                    onOpenCampaigns?.();
+                    showToast('Membuka halaman Kampanye Pemasaran');
+                  } else if (q.includes('prospek') || q.includes('lead') || q.includes('b2b')) {
+                    onOpenLeads?.();
+                    showToast('Membuka pipeline Prospek B2B');
+                  } else if (q.includes('analisis') || q.includes('finansial') || q.includes('omzet')) {
+                    onOpenAnalytics?.();
+                    showToast('Membuka Analisis Finansial');
+                  } else {
+                    showToast(`Hasil pencarian untuk "${searchQuery}": 1 data cocok`);
+                  }
+                }
+              }}
               className="bg-transparent border-none outline-none w-full text-xs placeholder:text-slate-400"
             />
             <kbd
@@ -505,8 +579,10 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
               isDarkMode ? 'text-zinc-400' : 'text-slate-500'
             }`}
           >
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-            <span>Kamis, 22 Okt • 09:48 WIB</span>
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span suppressHydrationWarning>
+              {mounted ? formatLiveHeaderTime(currentTime) : 'Memuat waktu...'}
+            </span>
           </div>
 
           <div
@@ -693,15 +769,19 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
         {/* 2. BANNER SAPAAN EKSEKUTIF */}
         <section className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-1">
           <div>
-            <p className="text-[11px] font-semibold tracking-wider text-slate-400 uppercase font-mono">
-              KAMIS, 22 OKTOBER • RINGKASAN EKSEKUTIF
+            <p
+              className="text-[11px] font-semibold tracking-wider text-slate-400 uppercase font-mono"
+              suppressHydrationWarning
+            >
+              {mounted ? formatLiveBannerDate(currentTime) : 'RINGKASAN EKSEKUTIF'}
             </p>
             <h1
               className={`text-3xl font-extrabold tracking-tight mt-1 ${
                 isDarkMode ? 'text-white' : 'text-slate-900'
               }`}
+              suppressHydrationWarning
             >
-              Selamat pagi, Pak Aditya
+              {mounted ? `${getGreeting(currentTime)}, Pak Aditya` : 'Selamat datang, Pak Aditya'}
             </h1>
             <p
               className={`text-sm mt-1 font-normal leading-relaxed ${
@@ -1427,14 +1507,16 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
               {campaigns.map((camp) => (
                 <div
                   key={camp.id}
-                  className={`flex items-center justify-between gap-3 p-2.5 rounded-xl transition-colors border ${
+                  onClick={() => onOpenCampaigns?.()}
+                  className={`flex items-center justify-between gap-3 p-2.5 rounded-xl transition-colors border cursor-pointer ${
                     isDarkMode
                       ? 'border-transparent hover:bg-white/[0.04]'
                       : 'border-transparent hover:bg-slate-50/80 hover:border-slate-100'
                   }`}
+                  title="Klik untuk membuka detail kampanye pemasaran"
                 >
                   <div className="min-w-0 flex-1">
-                    <div className="font-bold text-xs truncate">{camp.title}</div>
+                    <div className="font-bold text-xs truncate hover:text-indigo-400 transition">{camp.title}</div>
                     <div className="text-[11px] text-slate-400 mt-0.5">{camp.channel}</div>
                   </div>
 
@@ -1458,7 +1540,11 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
 
                   <div className="flex-shrink-0 pl-1">
                     <button
-                      onClick={() => toggleCampaign(camp.id)}
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleCampaign(camp.id);
+                      }}
                       className={`w-9 h-5 rounded-full p-0.5 transition-colors cursor-pointer ${
                         camp.active ? 'bg-indigo-600' : 'bg-slate-300 dark:bg-slate-600'
                       }`}
@@ -1655,7 +1741,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                     isDarkMode ? 'text-white' : 'text-slate-900'
                   }`}
                 >
-                  <Flame className="w-4 h-4 text-amber-500" />
+                  {/* <Flame className="w-4 h-4 text-amber-500" /> */}
                   <span>Prospek B2B Utama</span>
                 </h3>
                 <p className="text-xs text-slate-400 mt-0.5">Grosir &amp; korporat, berdasarkan skor</p>

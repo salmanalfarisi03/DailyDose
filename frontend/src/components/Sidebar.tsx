@@ -328,7 +328,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     : 'bg-indigo-50 text-indigo-700 border-indigo-200'
                 }`}
               >
-                AI COPILOT
+                AI ASISTANT
               </span>
             </div>
             <div className="space-y-1">
@@ -445,10 +445,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
       >
         {/* Kartu Realisasi Target */}
         <div
-          className={`rounded-xl p-3 mb-3 shadow-2xs border ${
+          onClick={() => setActiveTab('analytics')}
+          title="Klik untuk membuka Analisis Finansial Mendalam"
+          className={`rounded-xl p-3 mb-3 shadow-2xs border transition cursor-pointer hover:border-indigo-400/60 ${
             isDarkMode
-              ? 'bg-[#13151b] border-white/[0.08] text-zinc-300'
-              : 'bg-slate-50 border-slate-200/80 text-slate-800'
+              ? 'bg-[#13151b] border-white/[0.08] text-zinc-300 hover:bg-[#1a1d26]'
+              : 'bg-slate-50 border-slate-200/80 text-slate-800 hover:bg-slate-100/80'
           }`}
         >
           <div className="flex items-center justify-between text-xs mb-1">
