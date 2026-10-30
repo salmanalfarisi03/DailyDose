@@ -15,9 +15,10 @@ import { Invoice } from '@/types/api';
 
 interface ReportsViewProps {
   invoices: Invoice[];
+  isDarkMode?: boolean;
 }
 
-export const ReportsView: React.FC<ReportsViewProps> = ({ invoices }) => {
+export const ReportsView: React.FC<ReportsViewProps> = ({ invoices, isDarkMode = false }) => {
   const [toast, setToast] = useState<string | null>(null);
 
   const showToast = (msg: string) => {
@@ -49,20 +50,30 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ invoices }) => {
       )}
 
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs">
+      <div
+        className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-2xl border shadow-xs transition-colors ${
+          isDarkMode
+            ? 'bg-[#1e2130] border-white/[0.08] text-zinc-100'
+            : 'bg-white border-slate-200/80 text-slate-900'
+        }`}
+      >
         <div>
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
-            <FileText className="w-6 h-6 text-indigo-600" />
+          <h2 className="text-2xl font-black tracking-tight flex items-center gap-2.5">
+            <FileText className="w-6 h-6 text-indigo-500" />
             <span>Laporan Keuangan &amp; Audit Kampanye</span>
           </h2>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className={`text-xs mt-1 ${isDarkMode ? 'text-zinc-400' : 'text-slate-500'}`}>
             Rekapitulasi performa finansial, audit tagihan piutang, dan efisiensi kanal pemasaran.
           </p>
         </div>
 
         <button
           onClick={() => handleDownload('DailyDose_Comprehensive_Q4_Audit')}
-          className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold flex items-center gap-2 shadow-xs cursor-pointer transition"
+          className={`px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-xs cursor-pointer transition ${
+            isDarkMode
+              ? 'bg-zinc-100 hover:bg-white text-zinc-900'
+              : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+          }`}
         >
           <Download className="w-4 h-4" />
           <span>Unduh Semua Laporan (ZIP)</span>
@@ -96,25 +107,41 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ invoices }) => {
         ].map((rep, i) => (
           <div
             key={i}
-            className="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs hover:shadow-md transition flex flex-col justify-between space-y-4"
+            className={`rounded-2xl p-6 border shadow-xs transition flex flex-col justify-between space-y-4 ${
+              isDarkMode
+                ? 'bg-[#1e2130] border-white/[0.08] text-zinc-100 hover:border-white/20'
+                : 'bg-white border-slate-200/80 text-slate-900 hover:border-slate-300'
+            }`}
           >
             <div>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-[10px] font-bold text-slate-400 font-mono">
                   {rep.period}
                 </span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <span
+                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                    isDarkMode
+                      ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                      : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                  }`}
+                >
                   {rep.status}
                 </span>
               </div>
-              <h3 className="font-extrabold text-base text-slate-900">{rep.title}</h3>
-              <div className="text-xl font-black text-slate-900 font-mono mt-2">{rep.val}</div>
-              <p className="text-xs text-slate-500 mt-2 leading-relaxed">{rep.desc}</p>
+              <h3 className="font-extrabold text-base">{rep.title}</h3>
+              <div className="text-xl font-black font-mono mt-2">{rep.val}</div>
+              <p className={`text-xs mt-2 leading-relaxed ${isDarkMode ? 'text-zinc-400' : 'text-slate-500'}`}>
+                {rep.desc}
+              </p>
             </div>
 
             <button
               onClick={() => handleDownload(rep.title)}
-              className="w-full py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold rounded-xl flex items-center justify-center gap-2 transition cursor-pointer"
+              className={`w-full py-2 border text-xs font-semibold rounded-xl flex items-center justify-center gap-2 transition cursor-pointer ${
+                isDarkMode
+                  ? 'bg-white/[0.05] hover:bg-white/[0.1] border-white/10 text-zinc-200'
+                  : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700'
+              }`}
             >
               <Download className="w-3.5 h-3.5 text-slate-400" />
               <span>Ekspor Format CSV</span>

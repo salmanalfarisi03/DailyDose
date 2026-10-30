@@ -30,6 +30,7 @@ interface DashboardViewProps {
   seedingLoading?: boolean;
   onOpenDeepDiveModal?: () => void;
   onOpenDiagnosticsModal?: () => void;
+  isDarkMode?: boolean;
 }
 
 export const DashboardView: React.FC<DashboardViewProps> = ({
@@ -40,6 +41,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   onNavigate,
   onOpenDeepDiveModal,
   onOpenDiagnosticsModal,
+  isDarkMode = false,
 }) => {
   const [chartPeriod, setChartPeriod] = useState<'monthly' | 'quarterly' | 'yearly'>('monthly');
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
@@ -159,7 +161,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <div
           onClick={() => onNavigate('invoices')}
           title="Klik untuk membuka rincian Faktur Penagihan Lunas"
-          className="bg-white rounded-2xl p-5 border border-slate-200/70 shadow-[0_4px_24px_rgba(15,23,42,0.03)] hover:border-slate-300 transition-all flex flex-col justify-between cursor-pointer group"
+          className={`rounded-2xl p-5 border shadow-xs transition-all flex flex-col justify-between cursor-pointer group ${
+            isDarkMode
+              ? 'bg-[#1e2130] border-white/[0.08] text-zinc-100 hover:border-white/20'
+              : 'bg-white border-slate-200/70 text-slate-900 hover:border-slate-300'
+          }`}
         >
           <div className="flex items-start justify-between">
             <span className="text-[11px] font-bold tracking-wider text-slate-400 uppercase">
@@ -170,11 +176,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           </div>
           <div className="mt-2">
-            <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
+            <div className={`text-3xl font-extrabold tracking-tight ${isDarkMode ? 'text-zinc-100' : 'text-slate-900'}`}>
               {totalRevenue > 0 ? formatCurrency(totalRevenue) : 'Rp 4.750.000'}
             </div>
             <div className="flex items-center gap-2 mt-3 text-xs">
-              <span className="font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-100 text-[11px]">
+              <span className={`font-bold px-2 py-0.5 rounded-md text-[11px] ${
+                isDarkMode
+                  ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                  : 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+              }`}>
                 +18.4%
               </span>
               <span className="text-slate-400 font-medium">
@@ -189,7 +199,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <div
           onClick={() => onNavigate('invoices')}
           title="Klik untuk memeriksa status penagihan outstanding"
-          className="bg-white rounded-2xl p-5 border border-slate-200/70 shadow-[0_4px_24px_rgba(15,23,42,0.03)] hover:border-slate-300 transition-all flex flex-col justify-between cursor-pointer group"
+          className={`rounded-2xl p-5 border shadow-xs transition-all flex flex-col justify-between cursor-pointer group ${
+            isDarkMode
+              ? 'bg-[#1e2130] border-white/[0.08] text-zinc-100 hover:border-white/20'
+              : 'bg-white border-slate-200/70 text-slate-900 hover:border-slate-300'
+          }`}
         >
           <div className="flex items-start justify-between">
             <span className="text-[11px] font-bold tracking-wider text-slate-400 uppercase">
@@ -200,14 +214,18 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           </div>
           <div className="mt-2">
-            <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
+            <div className={`text-3xl font-extrabold tracking-tight ${isDarkMode ? 'text-zinc-100' : 'text-slate-900'}`}>
               {formatCurrency(totalOutstanding)}
             </div>
             <div className="flex items-center gap-2 mt-3 text-xs">
-              <span className="text-slate-500 font-medium">
+              <span className="text-slate-400 font-medium">
                 0 Piutang Tertunda
               </span>
-              <span className="font-medium px-2.5 py-0.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100 text-[11px] flex items-center gap-1">
+              <span className={`font-medium px-2.5 py-0.5 rounded-lg text-[11px] flex items-center gap-1 ${
+                isDarkMode
+                  ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                  : 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+              }`}>
                 <Check className="w-3 h-3 stroke-[3]" />
                 Arus kas sehat
               </span>
@@ -219,7 +237,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <div
           onClick={() => onNavigate('customers')}
           title="Klik untuk membuka Direktori Pelanggan / CRM"
-          className="bg-white rounded-2xl p-5 border border-slate-200/70 shadow-[0_4px_24px_rgba(15,23,42,0.03)] hover:border-slate-300 transition-all flex flex-col justify-between cursor-pointer group"
+          className={`rounded-2xl p-5 border shadow-xs transition-all flex flex-col justify-between cursor-pointer group ${
+            isDarkMode
+              ? 'bg-[#1e2130] border-white/[0.08] text-zinc-100 hover:border-white/20'
+              : 'bg-white border-slate-200/70 text-slate-900 hover:border-slate-300'
+          }`}
         >
           <div className="flex items-start justify-between">
             <span className="text-[11px] font-bold tracking-wider text-slate-400 uppercase">
@@ -230,11 +252,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           </div>
           <div className="mt-2">
-            <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
+            <div className={`text-3xl font-extrabold tracking-tight ${isDarkMode ? 'text-zinc-100' : 'text-slate-900'}`}>
               {customers.length > 0 ? `${customers.length} Akun` : '4 Akun'}
             </div>
             <div className="flex items-center gap-2 mt-3 text-xs">
-              <span className="font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200 text-[11px]">
+              <span className={`font-bold px-2 py-0.5 rounded-md text-[11px] ${
+                isDarkMode
+                  ? 'bg-white/10 text-zinc-200 border border-white/10'
+                  : 'bg-slate-100 text-slate-700 border border-slate-200'
+              }`}>
                 100% Retensi
               </span>
               <span className="text-slate-400 font-medium">
@@ -249,7 +275,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <div
           onClick={() => onNavigate('tasks')}
           title="Klik untuk membuka Papan Kanban Tugas Operasional"
-          className="bg-white rounded-2xl p-5 border border-slate-200/70 shadow-[0_4px_24px_rgba(15,23,42,0.03)] hover:border-slate-300 transition-all flex flex-col justify-between cursor-pointer group"
+          className={`rounded-2xl p-5 border shadow-xs transition-all flex flex-col justify-between cursor-pointer group ${
+            isDarkMode
+              ? 'bg-[#1e2130] border-white/[0.08] text-zinc-100 hover:border-white/20'
+              : 'bg-white border-slate-200/70 text-slate-900 hover:border-slate-300'
+          }`}
         >
           <div className="flex items-start justify-between">
             <span className="text-[11px] font-bold tracking-wider text-slate-400 uppercase">
@@ -260,11 +290,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           </div>
           <div className="mt-2">
-            <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
+            <div className={`text-3xl font-extrabold tracking-tight ${isDarkMode ? 'text-zinc-100' : 'text-slate-900'}`}>
               0 Tertunda
             </div>
             <div className="flex items-center gap-2 mt-3 text-xs">
-              <span className="font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-100 text-[11px]">
+              <span className={`font-bold px-2 py-0.5 rounded-md text-[11px] ${
+                isDarkMode
+                  ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                  : 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+              }`}>
                 Nir-Tunggakan
               </span>
               <span className="text-slate-400 font-medium">
@@ -281,20 +315,30 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
          ======================================================================= */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         {/* Kolom Kiri: Tren Pendapatan & Pertumbuhan Penjualan (Span 7) */}
-        <div className="lg:col-span-7 bg-white rounded-3xl p-6 border border-slate-200/70 shadow-[0_4px_24px_rgba(15,23,42,0.03)] flex flex-col justify-between">
+        <div
+          className={`lg:col-span-7 rounded-3xl p-6 border shadow-xs flex flex-col justify-between transition-colors ${
+            isDarkMode
+              ? 'bg-[#1e2130] border-white/[0.08] text-zinc-100'
+              : 'bg-white border-slate-200/70 text-slate-900'
+          }`}
+        >
           <div>
             {/* Header Chart */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-base font-bold text-slate-900">
+                  <h3 className={`text-base font-bold ${isDarkMode ? 'text-zinc-100' : 'text-slate-900'}`}>
                     Tren Pendapatan &amp; Pertumbuhan Penjualan
                   </h3>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                    isDarkMode
+                      ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                      : 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+                  }`}>
                     FY-2026
                   </span>
                 </div>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className={`text-xs mt-1 ${isDarkMode ? 'text-zinc-400' : 'text-slate-500'}`}>
                   Perbandingan realisasi pendapatan aktual terhadap target bulanan (dalam Juta Rupiah)
                 </p>
               </div>
@@ -520,11 +564,17 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
 
         {/* Kolom Kanan: Status & Distribusi Penagihan (Span 5) */}
-        <div className="lg:col-span-5 bg-white rounded-3xl p-6 border border-slate-200/70 shadow-[0_4px_24px_rgba(15,23,42,0.03)] flex flex-col justify-between">
+        <div
+          className={`lg:col-span-5 rounded-3xl p-6 border shadow-xs flex flex-col justify-between transition-colors ${
+            isDarkMode
+              ? 'bg-[#1e2130] border-white/[0.08] text-zinc-100'
+              : 'bg-white border-slate-200/70 text-slate-900'
+          }`}
+        >
           <div>
             <div className="flex items-start justify-between">
               <div>
-                <h3 className="text-base font-bold text-slate-900">
+                <h3 className={`text-base font-bold ${isDarkMode ? 'text-zinc-100' : 'text-slate-900'}`}>
                   Status &amp; Distribusi Penagihan
                 </h3>
                 <p className="text-xs text-slate-400 mt-0.5">
@@ -534,19 +584,31 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <div className="relative">
                 <button
                   onClick={() => setShowDonutMenu(!showDonutMenu)}
-                  className="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-100 transition cursor-pointer"
+                  className={`p-1.5 rounded-xl transition cursor-pointer ${
+                    isDarkMode
+                      ? 'text-zinc-400 hover:text-white hover:bg-white/10'
+                      : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'
+                  }`}
                   title="Opsi Penagihan"
                 >
                   <MoreHorizontal className="w-4 h-4" />
                 </button>
                 {showDonutMenu && (
-                  <div className="absolute right-0 mt-1 w-48 rounded-2xl bg-white border border-slate-200 shadow-xl py-1.5 z-20 text-xs animate-in fade-in zoom-in-95">
+                  <div
+                    className={`absolute right-0 mt-1 w-48 rounded-2xl border shadow-xl py-1.5 z-20 text-xs animate-in fade-in zoom-in-95 ${
+                      isDarkMode
+                        ? 'bg-[#151722] border-white/10 text-zinc-200'
+                        : 'bg-white border-slate-200 text-slate-700'
+                    }`}
+                  >
                     <button
                       onClick={() => {
                         setShowDonutMenu(false);
                         onNavigate('invoices');
                       }}
-                      className="w-full px-3.5 py-2 text-left hover:bg-slate-50 text-slate-700 font-medium cursor-pointer"
+                      className={`w-full px-3.5 py-2 text-left font-medium cursor-pointer ${
+                        isDarkMode ? 'hover:bg-white/[0.06]' : 'hover:bg-slate-50'
+                      }`}
                     >
                       Buka Rincian Invoices
                     </button>
@@ -555,7 +617,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         setShowDonutMenu(false);
                         onOpenDeepDiveModal?.();
                       }}
-                      className="w-full px-3.5 py-2 text-left hover:bg-slate-50 text-slate-700 font-medium cursor-pointer"
+                      className={`w-full px-3.5 py-2 text-left font-medium cursor-pointer ${
+                        isDarkMode ? 'hover:bg-white/[0.06]' : 'hover:bg-slate-50'
+                      }`}
                     >
                       Analisis Margin &amp; Omset
                     </button>
@@ -564,7 +628,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         setShowDonutMenu(false);
                         onOpenDiagnosticsModal?.();
                       }}
-                      className="w-full px-3.5 py-2 text-left hover:bg-slate-50 text-slate-700 font-medium border-t border-slate-100 cursor-pointer"
+                      className={`w-full px-3.5 py-2 text-left font-medium border-t cursor-pointer ${
+                        isDarkMode
+                          ? 'border-white/10 hover:bg-white/[0.06]'
+                          : 'border-slate-100 hover:bg-slate-50'
+                      }`}
                     >
                       Status Sinkronisasi Ledger
                     </button>
@@ -650,8 +718,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   <title>Dalam Verifikasi: Rp 0 (7%)</title>
                 </path>
 
-                {/* Center White Cutout Hole */}
-                <ellipse cx="110" cy="95" rx="44" ry="25" fill="#ffffff" stroke="#f1f5f9" strokeWidth="1" />
+                {/* Center White Cutout Hole (Dynamic Theme) */}
+                <ellipse
+                  cx="110"
+                  cy="95"
+                  rx="44"
+                  ry="25"
+                  fill={isDarkMode ? '#151722' : '#ffffff'}
+                  stroke={isDarkMode ? 'rgba(255,255,255,0.1)' : '#f1f5f9'}
+                  strokeWidth="1.5"
+                />
               </svg>
 
               {/* Center Donut Label (Clickable) */}
@@ -661,13 +737,25 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 title="Status Penagihan: 100% Lunas (Klik untuk melihat Invoices)"
                 className="absolute inset-0 m-auto w-24 h-24 rounded-full flex flex-col items-center justify-center text-center cursor-pointer hover:scale-105 transition-transform"
               >
-                <span className="text-[10px] tracking-widest text-slate-400 font-bold uppercase">
+                <span
+                  className={`text-[10px] tracking-widest font-bold uppercase ${
+                    isDarkMode ? 'text-zinc-400' : 'text-slate-400'
+                  }`}
+                >
                   LUNAS
                 </span>
-                <span className="text-2xl font-black text-slate-900 leading-tight">
+                <span
+                  className={`text-2xl font-black leading-tight ${
+                    isDarkMode ? 'text-zinc-100' : 'text-slate-900'
+                  }`}
+                >
                   100%
                 </span>
-                <span className="text-[10px] text-slate-400 font-medium">
+                <span
+                  className={`text-[10px] font-medium ${
+                    isDarkMode ? 'text-emerald-400' : 'text-slate-500'
+                  }`}
+                >
                   Zero Unpaid
                 </span>
               </button>
@@ -675,34 +763,64 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
             {/* Verification Notice Banner if clicked */}
             {verificationNotice && (
-              <div className="mb-2 p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-800 flex items-center justify-between animate-in fade-in">
+              <div
+                className={`mb-2 p-2.5 rounded-xl border text-xs flex items-center justify-between animate-in fade-in ${
+                  isDarkMode
+                    ? 'bg-amber-500/15 border-amber-500/30 text-amber-300'
+                    : 'bg-amber-50 border-amber-200 text-amber-800'
+                }`}
+              >
                 <span>Seluruh transaksi terverifikasi lancar. Tidak ada piutang tertahan.</span>
                 <button
                   onClick={() => setVerificationNotice(false)}
-                  className="text-amber-600 hover:text-amber-900 font-bold text-xs ml-2 cursor-pointer"
+                  className={`font-bold text-xs ml-2 cursor-pointer ${
+                    isDarkMode ? 'text-amber-200 hover:text-white' : 'text-amber-600 hover:text-amber-900'
+                  }`}
                 >
                   Tutup
                 </button>
               </div>
             )}
 
-            {/* Tabular Data below Donut (Fully Clickable) */}
+            {/* Tabular Data below Donut (High Contrast & Clear) */}
             <div className="space-y-2.5 pt-2 text-xs">
               {/* Row 1: Lunas */}
               <div
                 onClick={() => onNavigate('invoices')}
                 title="Buka Faktur Lunas"
-                className="flex items-center justify-between p-1.5 -mx-1.5 rounded-xl hover:bg-slate-50 cursor-pointer transition group"
+                className={`flex items-center justify-between p-2 rounded-xl cursor-pointer transition group ${
+                  isDarkMode
+                    ? 'hover:bg-white/[0.04]'
+                    : 'hover:bg-slate-50'
+                }`}
               >
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                  <span className="text-slate-700 font-medium group-hover:text-emerald-700 transition">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 flex-shrink-0" />
+                  <span
+                    className={`font-medium transition ${
+                      isDarkMode
+                        ? 'text-zinc-200 group-hover:text-emerald-400'
+                        : 'text-slate-700 group-hover:text-emerald-700'
+                    }`}
+                  >
                     Lunas (Paid in Full)
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-slate-900">Rp 4.750.000</span>
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-100">
+                  <span
+                    className={`font-bold ${
+                      isDarkMode ? 'text-zinc-100' : 'text-slate-900'
+                    }`}
+                  >
+                    Rp 4.750.000
+                  </span>
+                  <span
+                    className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${
+                      isDarkMode
+                        ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+                        : 'bg-emerald-50 text-emerald-700 border-emerald-100'
+                    }`}
+                  >
                     75%
                   </span>
                 </div>
@@ -712,17 +830,43 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <div
                 onClick={() => onNavigate('invoices')}
                 title="Buka Draft Invoices"
-                className="flex items-center justify-between p-1.5 -mx-1.5 rounded-xl hover:bg-slate-50 cursor-pointer transition group"
+                className={`flex items-center justify-between p-2 rounded-xl cursor-pointer transition group ${
+                  isDarkMode
+                    ? 'hover:bg-white/[0.04]'
+                    : 'hover:bg-slate-50'
+                }`}
               >
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#0f172a]" />
-                  <span className="text-slate-700 font-medium group-hover:text-slate-900 transition">
+                <div className="flex items-center gap-2.5">
+                  <span
+                    className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
+                      isDarkMode ? 'bg-indigo-400' : 'bg-[#0f172a]'
+                    }`}
+                  />
+                  <span
+                    className={`font-medium transition ${
+                      isDarkMode
+                        ? 'text-zinc-200 group-hover:text-white'
+                        : 'text-slate-700 group-hover:text-slate-900'
+                    }`}
+                  >
                     Draft Invoices
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-slate-900">4 Dokumen</span>
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
+                  <span
+                    className={`font-bold ${
+                      isDarkMode ? 'text-zinc-100' : 'text-slate-900'
+                    }`}
+                  >
+                    4 Dokumen
+                  </span>
+                  <span
+                    className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${
+                      isDarkMode
+                        ? 'bg-white/10 text-zinc-300 border-white/10'
+                        : 'bg-slate-100 text-slate-600 border-slate-200'
+                    }`}
+                  >
                     18%
                   </span>
                 </div>
@@ -732,17 +876,39 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <div
                 onClick={() => setVerificationNotice(!verificationNotice)}
                 title="Klik untuk melihat status verifikasi piutang"
-                className="flex items-center justify-between p-1.5 -mx-1.5 rounded-xl hover:bg-slate-50 cursor-pointer transition group"
+                className={`flex items-center justify-between p-2 rounded-xl cursor-pointer transition group ${
+                  isDarkMode
+                    ? 'hover:bg-white/[0.04]'
+                    : 'hover:bg-slate-50'
+                }`}
               >
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                  <span className="text-slate-700 font-medium group-hover:text-amber-800 transition">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-400 flex-shrink-0" />
+                  <span
+                    className={`font-medium transition ${
+                      isDarkMode
+                        ? 'text-zinc-200 group-hover:text-amber-300'
+                        : 'text-slate-700 group-hover:text-amber-800'
+                    }`}
+                  >
                     Dalam Verifikasi
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-slate-900">Rp 0</span>
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-100">
+                  <span
+                    className={`font-bold ${
+                      isDarkMode ? 'text-zinc-100' : 'text-slate-900'
+                    }`}
+                  >
+                    Rp 0
+                  </span>
+                  <span
+                    className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${
+                      isDarkMode
+                        ? 'bg-amber-500/15 text-amber-300 border-amber-500/30'
+                        : 'bg-amber-50 text-amber-700 border-amber-100'
+                    }`}
+                  >
                     7%
                   </span>
                 </div>
@@ -751,9 +917,21 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           {/* Footer Conversion */}
-          <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-            <span className="text-slate-500">Tingkat konversi invoice</span>
-            <span className="font-bold text-emerald-600">Tinggi (98.2%) ↗</span>
+          <div
+            className={`pt-3 border-t flex items-center justify-between text-xs ${
+              isDarkMode ? 'border-white/10' : 'border-slate-100'
+            }`}
+          >
+            <span className={isDarkMode ? 'text-zinc-400' : 'text-slate-500'}>
+              Tingkat konversi invoice
+            </span>
+            <span
+              className={`font-bold ${
+                isDarkMode ? 'text-emerald-400' : 'text-emerald-600'
+              }`}
+            >
+              Tinggi (98.2%) ↗
+            </span>
           </div>
         </div>
       </div>
@@ -763,27 +941,39 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
          ======================================================================= */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Kolom Kiri: Invoices & Aktivitas Penagihan Terkini (Span 7) */}
-        <div className="lg:col-span-7 bg-white rounded-3xl p-6 border border-slate-200/70 shadow-[0_4px_24px_rgba(15,23,42,0.03)] space-y-4">
+        <div
+          className={`lg:col-span-7 rounded-3xl p-6 border shadow-xs space-y-4 transition-colors ${
+            isDarkMode
+              ? 'bg-[#1e2130] border-white/[0.08] text-zinc-100'
+              : 'bg-white border-slate-200/70 text-slate-900'
+          }`}
+        >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1">
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-bold text-slate-900">
+                <h3 className={`text-base font-bold ${isDarkMode ? 'text-zinc-100' : 'text-slate-900'}`}>
                   Invoices &amp; Aktivitas Penagihan Terkini
                 </h3>
                 <button
                   onClick={() => onNavigate('invoices')}
-                  className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-200 cursor-pointer transition"
+                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full border cursor-pointer transition ${
+                    isDarkMode
+                      ? 'bg-white/[0.06] text-zinc-300 border-white/10 hover:bg-white/10'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border-slate-200'
+                  }`}
                 >
                   6 Transaksi
                 </button>
               </div>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className={`text-xs mt-0.5 ${isDarkMode ? 'text-zinc-400' : 'text-slate-400'}`}>
                 Pantau status penagihan dan riwayat transaksi pelanggan secara detail
               </p>
             </div>
             <button
               onClick={() => onNavigate('invoices')}
-              className="text-xs text-slate-900 hover:text-indigo-600 font-semibold flex items-center gap-1 cursor-pointer transition self-start sm:self-auto"
+              className={`text-xs font-semibold flex items-center gap-1 cursor-pointer transition self-start sm:self-auto ${
+                isDarkMode ? 'text-zinc-200 hover:text-white' : 'text-slate-900 hover:text-indigo-600'
+              }`}
             >
               <span>Lihat Semua Invoices</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -793,7 +983,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-slate-150 text-slate-400 font-mono">
+                <tr className={`border-b font-mono ${isDarkMode ? 'border-white/10 text-zinc-400' : 'border-slate-150 text-slate-400'}`}>
                   <th className="pb-3 font-semibold uppercase text-[10px]">NOMOR INVOICE</th>
                   <th className="pb-3 font-semibold uppercase text-[10px]">STATUS</th>
                   <th className="pb-3 font-semibold uppercase text-[10px]">TANGGAL DIBUAT</th>
@@ -801,32 +991,38 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   <th className="pb-3 font-semibold uppercase text-[10px] text-right">AKSI</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-slate-700 font-medium">
+              <tbody className={`divide-y font-medium ${isDarkMode ? 'divide-white/[0.06] text-zinc-300' : 'divide-slate-100 text-slate-700'}`}>
                 {displayInvoices.map((inv) => (
                   <tr
                     key={inv.id}
                     onClick={() => setSelectedInvoice(inv as Invoice)}
-                    className="hover:bg-slate-50/80 transition cursor-pointer group"
+                    className={`transition cursor-pointer group ${
+                      isDarkMode ? 'hover:bg-white/[0.03]' : 'hover:bg-slate-50/80'
+                    }`}
                     title="Klik untuk membuka detail faktur resmi"
                   >
-                    <td className="py-3.5 font-mono font-bold text-slate-900 group-hover:text-indigo-600 transition">
+                    <td className={`py-3.5 font-mono font-bold transition ${isDarkMode ? 'text-zinc-100 group-hover:text-indigo-400' : 'text-slate-900 group-hover:text-indigo-600'}`}>
                       {inv.invoice_number}
                     </td>
                     <td className="py-3.5">
                       <span
                         className={`px-2.5 py-0.5 rounded-md text-[10px] font-bold border ${
                           inv.status === 'PAID'
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+                            ? isDarkMode
+                              ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+                              : 'bg-emerald-50 text-emerald-700 border-emerald-100'
+                            : isDarkMode
+                            ? 'bg-white/10 text-zinc-300 border-white/10'
                             : 'bg-slate-100 text-slate-600 border-slate-200'
                         }`}
                       >
                         {inv.status}
                       </span>
                     </td>
-                    <td className="py-3.5 text-slate-500">
+                    <td className="py-3.5 text-slate-400">
                       20 Okt 2026
                     </td>
-                    <td className="py-3.5 text-right font-mono font-bold text-slate-900">
+                    <td className={`py-3.5 text-right font-mono font-bold ${isDarkMode ? 'text-zinc-100' : 'text-slate-900'}`}>
                       {formatCurrency(Number(inv.total_amount))}
                     </td>
                     <td className="py-3.5 text-right">
@@ -835,7 +1031,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                           e.stopPropagation();
                           setSelectedInvoice(inv as Invoice);
                         }}
-                        className="text-xs font-semibold text-slate-600 hover:text-slate-900 cursor-pointer underline hover:no-underline"
+                        className={`text-xs font-semibold cursor-pointer underline hover:no-underline ${
+                          isDarkMode ? 'text-zinc-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
+                        }`}
                       >
                         Detail
                       </button>
@@ -850,10 +1048,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {/* Kolom Kanan: Tugas Prioritas & Status Integritas (Span 5) */}
         <div className="lg:col-span-5 space-y-4">
           {/* Card 1: Tugas Prioritas Hari Ini */}
-          <div className="bg-white rounded-3xl p-6 border border-slate-200/70 shadow-[0_4px_24px_rgba(15,23,42,0.03)] space-y-4">
+          <div
+            className={`rounded-3xl p-6 border shadow-xs space-y-4 transition-colors ${
+              isDarkMode
+                ? 'bg-[#1e2130] border-white/[0.08] text-zinc-100'
+                : 'bg-white border-slate-200/70 text-slate-900'
+            }`}
+          >
             <div className="flex items-center justify-between pb-1">
               <div>
-                <h3 className="text-base font-bold text-slate-900">
+                <h3 className={`text-base font-bold ${isDarkMode ? 'text-zinc-100' : 'text-slate-900'}`}>
                   Tugas Prioritas Hari Ini
                 </h3>
                 <p className="text-xs text-slate-400 mt-0.5">
@@ -862,7 +1066,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </div>
               <button
                 onClick={() => onNavigate('tasks')}
-                className="text-xs text-slate-900 hover:text-indigo-600 font-semibold flex items-center gap-1 cursor-pointer transition"
+                className={`text-xs font-semibold flex items-center gap-1 cursor-pointer transition ${
+                  isDarkMode ? 'text-zinc-200 hover:text-white' : 'text-slate-900 hover:text-indigo-600'
+                }`}
               >
                 <span>Kelola</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -874,24 +1080,32 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <div
                 onClick={() => setTaskCompleted(!taskCompleted)}
                 title="Klik untuk menandai tugas selesai / belum selesai"
-                className="p-3.5 rounded-xl bg-slate-50 hover:bg-slate-100/80 border border-slate-200/80 flex items-center gap-3 cursor-pointer transition select-none"
+                className={`p-3.5 rounded-xl border flex items-center gap-3 cursor-pointer transition select-none ${
+                  isDarkMode
+                    ? 'bg-white/[0.04] hover:bg-white/[0.08] border-white/10'
+                    : 'bg-slate-50 hover:bg-slate-100/80 border-slate-200/80'
+                }`}
               >
                 {taskCompleted ? (
-                  <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0" />
                 ) : (
-                  <CheckSquare className="w-5 h-5 text-slate-900 fill-slate-900 text-white flex-shrink-0" />
+                  <CheckSquare className="w-5 h-5 text-indigo-500 flex-shrink-0" />
                 )}
                 <div className="flex-1 min-w-0">
                   <p className={`text-xs font-semibold truncate transition ${
-                    taskCompleted ? 'line-through text-slate-400' : 'text-slate-800'
+                    taskCompleted
+                      ? 'line-through text-slate-500'
+                      : isDarkMode
+                      ? 'text-zinc-100'
+                      : 'text-slate-800'
                   }`}>
                     Kirim kontrak perpanjangan tahunan k...
                   </p>
                   <div className="flex items-center gap-2 mt-1">
                     <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded border transition ${
                       taskCompleted
-                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                        : 'bg-rose-50 text-rose-600 border border-rose-100'
+                        ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+                        : 'bg-rose-500/15 text-rose-400 border-rose-500/30'
                     }`}>
                       {taskCompleted ? 'SELESAI' : 'HIGH'}
                     </span>
@@ -906,14 +1120,18 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <div
                 onClick={() => onNavigate('products')}
                 title="Buka Katalog Produk & Cek Stok"
-                className="p-3.5 rounded-xl bg-amber-50/60 border border-amber-200/60 flex items-start gap-3 cursor-pointer hover:bg-amber-100/60 transition group"
+                className={`p-3.5 rounded-xl border flex items-start gap-3 cursor-pointer transition group ${
+                  isDarkMode
+                    ? 'bg-amber-500/10 border-amber-500/20 hover:bg-amber-500/15'
+                    : 'bg-amber-50/60 border-amber-200/60 hover:bg-amber-100/60'
+                }`}
               >
-                <AlertTriangle className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform" />
+                <AlertTriangle className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform" />
                 <div>
-                  <h4 className="text-xs font-bold text-amber-900">
+                  <h4 className={`text-xs font-bold ${isDarkMode ? 'text-amber-300' : 'text-amber-900'}`}>
                     1 produk memiliki stok menipis (&le; 5).
                   </h4>
-                  <p className="text-[11px] text-amber-800/80 mt-0.5 leading-snug">
+                  <p className={`text-[11px] mt-0.5 leading-snug ${isDarkMode ? 'text-amber-400/80' : 'text-amber-800/80'}`}>
                     Katalog Produk membutuhkan re-order dari supplier utama demi kelancaran rantai pasok.
                   </p>
                 </div>

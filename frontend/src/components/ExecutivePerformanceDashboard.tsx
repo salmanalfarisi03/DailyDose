@@ -495,7 +495,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
       <header
         className={`sticky top-0 z-30 backdrop-blur-md border-b px-6 py-2.5 flex items-center justify-between transition-colors ${
           isDarkMode
-            ? 'bg-[#191970]/90 border-white/[0.06]'
+            ? 'bg-[#0c0d11]/90 border-white/[0.06]'
             : 'bg-[#faf8f5]/90 border-stone-200/60'
         }`}
       >
@@ -528,7 +528,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
         {/* Tengah: Kolom Pencarian */}
         <div className="relative w-80 md:w-96">
           <div
-            className={`w-full border rounded-full px-4 py-1.5 text-xs flex items-center gap-2 shadow-xs transition-all ${
+            className={`w-full border rounded-full px-4 py-2 text-xs flex items-center gap-2 shadow-xs transition-all ${
               isDarkMode
                 ? 'bg-[#1e2130] border-white/[0.08] text-zinc-100 placeholder:text-zinc-500'
                 : 'bg-white border-slate-200/90 text-slate-700'
@@ -537,7 +537,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
             <Search className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
             <input
               type="text"
-              placeholder="Cari kampanye, prospek, audiens... (Tekan Enter)"
+              placeholder="Cari kampanye, prospek, audiens..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => {
@@ -567,7 +567,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
                   : 'bg-slate-100 border-slate-200 text-slate-400'
               }`}
             >
-              ⌘K
+              Enter ↵
             </kbd>
           </div>
         </div>
@@ -2022,7 +2022,7 @@ export const ExecutivePerformanceDashboard: React.FC<ExecutivePerformanceDashboa
           >
             <Sparkles className="w-3.5 h-3.5" />
           </div>
-          <span className="text-xs font-semibold tracking-tight">AI Copilot</span>
+          <span className="text-xs font-semibold tracking-tight">AI ASISTANT</span>
         </button>
       </div>
 

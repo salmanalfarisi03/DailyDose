@@ -472,6 +472,7 @@ export default function Home() {
               currentUser={currentUser}
               onOpenAccountModal={() => setModalAccountAuth(true)}
               onOpenDiagnosticsModal={() => setModalDiagnostics(true)}
+              isDarkMode={isDarkMode}
             />
 
             <main className="p-8 max-w-[1536px] w-full mx-auto flex-1">
@@ -483,7 +484,9 @@ export default function Home() {
 
               {activeTab === 'audiences' && <AudiencesView isDarkMode={isDarkMode} />}
 
-              {activeTab === 'reports' && <ReportsView invoices={invoices} />}
+              {activeTab === 'reports' && (
+                <ReportsView invoices={invoices} isDarkMode={isDarkMode} />
+              )}
 
               {activeTab === 'customers' && (
                 <CustomersView
@@ -534,6 +537,7 @@ export default function Home() {
                   seedingLoading={seedingLoading}
                   onOpenDeepDiveModal={() => setModalDeepDive(true)}
                   onOpenDiagnosticsModal={() => setModalDiagnostics(true)}
+                  isDarkMode={isDarkMode}
                 />
               )}
 
